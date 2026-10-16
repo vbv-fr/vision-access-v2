@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Frinks Vision · Access v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --p:#ff4301; --p90:rgba(255,67,1,.9); --light:#fdece5; --flat:#fadbce;
+  --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb; --g300:#d1d5db; --g400:#9ca3af; --g500:#6b7280; --g600:#4b5563; --g700:#374151; --g800:#1f2937; --g900:#111827;
+  --side:#1e1c1c; --dl:#E3E5E5; --red:#ef4444; --green:#22c55e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:'Outfit',sans-serif;color:#000;background:#fff;-webkit-font-smoothing:antialiased;line-height:1.5}
+button,input,select,textarea{font-family:inherit}
+[hidden]{display:none!important}
+
+/* ---------- main sidebar (350px, #1e1c1c) ---------- */
+.side{position:fixed;left:0;top:0;bottom:0;width:350px;background:var(--side);border-right:1px solid var(--g300);display:flex;flex-direction:column;align-items:stretch;padding:24px 0 16px 20px;color:#fff;z-index:20}
+.logo{display:block;padding:8px 8px 0;font-size:30px;font-weight:600;letter-spacing:-.01em}
+.logo b{color:var(--p)}
+.menu{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.mi{display:flex;align-items:center;margin-right:24px;padding:8px;border-radius:6px;cursor:pointer;font-size:18px;color:#fff;transition:background .3s}
+.mi:hover{background:rgba(255,255,255,.1)}
+.mi.active{background:rgba(255,255,255,.2)}
+.mi .ic{width:32px;display:flex;justify-content:center;flex:none}
+.mi .t{margin-left:16px}
+.subm{list-style:none;margin:6px 0 4px;padding:0;display:flex;flex-direction:column;gap:6px}
+.subm .mi{padding-left:56px}
+.who{margin-top:auto;margin-right:20px;position:relative}
+.whob{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.12)}
+.whob:hover{background:rgba(255,255,255,.08)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--p);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none;color:#fff}
+.whob .nm{font-size:15px;font-weight:500}
+.whob .rl{font-size:12px;color:#bdbdbd;line-height:1.3}
+.whomenu{position:absolute;bottom:64px;left:0;right:0;background:#fff;color:#111;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.35);max-height:70vh;overflow:auto;padding:6px}
+.whomenu .h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);padding:8px 10px 4px}
+.whomenu .it{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer}
+.whomenu .it:hover{background:var(--g100)}
+.whomenu .it.on{background:var(--light)}
+.whomenu .it .av{width:28px;height:28px;font-size:10px}
+.whomenu .it small{display:block;color:var(--g500);font-size:12px;line-height:1.3}
+
+/* ---------- project rail (80px) ---------- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:80px;background:var(--side);border-right:1px solid var(--g300);display:flex;flex-direction:column;align-items:center;padding:24px 8px;z-index:20}
+.rail .lg{color:#fff;font-weight:700;font-size:20px;margin:12px 0 40px;cursor:pointer}
+.rail .lg b{color:var(--p)}
+.rail ul{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;width:100%}
+.rail li{position:relative}
+.rail .ri{display:flex;justify-content:center;padding:8px 0;border-radius:6px;color:#fff;cursor:pointer}
+.rail .ri:hover,.rail .ri.active{background:rgba(255,255,255,.2)}
+.rail .tip{position:absolute;left:100%;top:50%;transform:translate(-4px,-50%);margin-left:12px;padding:6px 10px;font-size:12px;font-weight:600;color:#fff;background:var(--p);border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:.25s}
+.rail li:hover .tip{opacity:1;transform:translate(0,-50%)}
+.rail .bottom{margin-top:auto;width:100%}
+
+/* ---------- page ---------- */
+.main{margin-left:350px;min-height:100%}
+.main.proj{margin-left:80px}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:8px;height:60px;margin-top:4px;padding:16px 20px;background:#fff}
+.heading .t{font-size:30px;font-weight:500}
+.heading .acts{display:flex;align-items:center;gap:12px}
+.crumb{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--g500)}
+.crumb span{padding:4px 8px;border-radius:6px;font-weight:500;color:var(--g600)}
+.crumb span.cur{font-weight:600;color:var(--g900)}
+.crumb span.lnk{cursor:pointer}
+.crumb span.lnk:hover{color:var(--p);background:var(--g100)}
+.pad{padding:16px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 20px 14px}
+.bar .l{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+.btn{font-weight:600;font-size:14px;padding:8px 24px;border-radius:6px;cursor:pointer;border:1px solid transparent;background:var(--p);color:#fff;line-height:20px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn:hover{background:var(--p90)}
+.btn.md{padding:6px 16px}
+.btn.ssm{font-size:12px;padding:4px 8px}
+.btn.bd{background:transparent;border-color:var(--p);color:var(--p)}
+.btn.bd:hover{opacity:.7}
+.btn.light{background:#F6F6FF;color:var(--p)}
+.btn:disabled{background:var(--g200);color:var(--g500);border-color:transparent;cursor:not-allowed;opacity:1}
+.btn.ghost{background:transparent;color:var(--g700);border-color:var(--g300)}
+
+/* table (orange header like Table.tsx) */
+.tw{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;min-width:720px}
+table.t thead tr{background:var(--p)}
+table.t th{color:#fff;font-weight:500;font-size:16px;padding:16px 8px;text-align:center;position:relative;white-space:nowrap}
+table.t th:not(:last-child)::after{content:"";position:absolute;right:0;top:10px;bottom:10px;width:2px;border-radius:16px;background:#fff}
+table.t td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--g200);font-size:15px;color:#000}
+table.t tr.dim td{color:var(--g400)}
+.empty{padding:28px;text-align:center;font-size:18px;font-weight:600}
+.chip{display:inline-block;padding:2px 8px;border-radius:6px;background:rgba(255,67,1,.1);color:var(--p);border:1px solid rgba(255,67,1,.2);font-size:12.5px;font-weight:500;margin:2px;white-space:nowrap}
+.chip.adm{background:var(--p);color:#fff;border-color:var(--p)}
+.chip.cus{background:#eef2ff;color:#4f46e5;border-color:#c7d2fe}
+.chip.gray{background:var(--g100);color:var(--g600);border-color:var(--g200)}
+.st{font-size:13px;font-weight:600}
+.st.Active{color:#16a34a}.st.Invited{color:#d97706}.st.Inactive{color:var(--g400)}
+.ia{display:inline-flex;gap:6px;justify-content:center;align-items:center}
+.ib{width:30px;height:30px;border-radius:6px;display:inline-grid;place-items:center;cursor:pointer;color:var(--g700)}
+.ib:hover{background:var(--g100)}
+.ib.red{color:var(--red)}
+.link{color:var(--p);text-decoration:underline;font-weight:500;cursor:pointer}
+
+/* dots menu */
+.dd{position:relative;display:inline-block}
+.ddm{position:absolute;right:30px;top:0;z-index:40;background:#fff;border:1px solid var(--g200);border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.12);list-style:none;margin:0;padding:4px 0;min-width:150px;text-align:left}
+.ddm li{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+.ddm li:hover{background:var(--g100)}
+.ddm li.red{color:var(--red)}
+
+/* project cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:24px;margin-top:8px}
+.card{position:relative;min-height:160px;border:1px solid var(--g200);border-radius:8px;background:#fff;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;flex-direction:column;justify-content:space-between;overflow:visible;transition:all .3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 4px 6px -1px rgba(0,0,0,.1)}
+.card .top{display:flex;gap:16px;padding-right:24px}
+.card .ico{width:48px;height:48px;border-radius:16px;background:var(--light);color:var(--p);display:grid;place-items:center;flex:none}
+.card h3{margin:0;font-size:16px;font-weight:600;color:var(--g900);padding-top:4px}
+.card:hover h3{color:var(--p)}
+.card .desc{margin-top:6px;font-size:14px;color:var(--g500);line-height:1.35}
+.card .bot{margin-top:24px;padding-top:16px;display:flex;justify-content:space-between;align-items:center}
+.card .by{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;color:var(--g800)}
+.card .by .av{width:32px;height:32px;font-size:11px}
+.card .dt{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--g500)}
+.card .dt i{width:6px;height:6px;border-radius:50%;background:var(--p)}
+.card .mem{font-size:12px;color:var(--g500);margin-top:8px}
+.card .menu3{position:absolute;right:14px;top:14px;opacity:0;transition:.2s}
+.card:hover .menu3,.card .menu3.open{opacity:1}
+.card .ov{position:absolute;inset:auto 0 0 0;height:96px;display:flex;align-items:center;justify-content:center;gap:12px;padding:24px 24px 8px;background:linear-gradient(to top,#fff,rgba(255,255,255,.95),transparent);opacity:0;transform:translateY(20px);transition:.3s;border-radius:0 0 8px 8px}
+.card:hover .ov{opacity:1;transform:none}
+.card .ov .btn{flex:1;justify-content:center}
+.create{min-height:160px;border:2px dashed var(--g300);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fff;transition:.3s}
+.create:hover{border-color:rgba(255,67,1,.5);background:rgba(249,250,251,.5);box-shadow:0 10px 15px -3px rgba(0,0,0,.1)}
+.create .pl{width:52px;height:52px;border-radius:14px;background:var(--p);color:#fff;display:grid;place-items:center;font-size:32px;font-weight:300;margin-bottom:16px}
+.create h3{margin:0;font-size:16px;font-weight:700;color:var(--g900)}
+.create p{margin:4px 0 0;font-size:14px;font-weight:500;color:var(--g500)}
+.noacc{display:flex;gap:12px;align-items:center;width:fit-content;border-radius:8px;padding:12px 20px 12px 12px;font-size:16px;font-weight:600;box-shadow:3px 3px 5px #00000020;margin:20px}
+
+/* drawer (shared/ui/Drawer) */
+.bk{position:fixed;inset:0;background:rgba(180,182,184,.5);z-index:60}
+.dr{position:fixed;top:0;right:0;height:100%;width:100%;background:#fff;z-index:61;display:flex;flex-direction:column}
+.dr.xs{max-width:512px}.dr.md{max-width:768px}.dr.xl{max-width:1100px}
+.dr .dh{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--g200);padding:12px 16px 8px;height:50px;font-size:18px;font-weight:600}
+.dr .dh .x{cursor:pointer;padding:2px 6px}
+.dr .db{flex:1;overflow-y:auto;padding:8px 14px 24px}
+.dr .df{display:flex;justify-content:flex-end;gap:16px;align-items:center;border-top:1px solid var(--g200);padding:16px;min-height:80px}
+.dr .df .grow{flex:1;font-size:13px;color:var(--g500)}
+.form{display:flex;flex-direction:column;gap:16px;padding-top:8px}
+.lb{display:block;font-size:14px;margin-bottom:4px;color:#000}
+.lb .rq{color:var(--red)}
+.in,.sel{width:100%;border:1px solid var(--g300);border-radius:6px;padding:8px 12px;font-size:14px;outline:none;background:#fff;color:#000}
+.in:focus,.sel:focus{border-color:var(--p);outline:2px solid var(--p);outline-offset:-1px}
+.sel:disabled,.in:disabled{background:var(--g100);color:var(--g500)}
+.err{font-size:12px;color:var(--red);margin-top:4px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px;border:1px solid var(--g200);border-radius:6px;min-height:42px;align-items:center}
+.chips .chip{font-size:14px}
+.chips input{border:none;outline:none;flex:1;min-width:140px;font-size:14px;padding:4px}
+.sec{border-top:4px solid var(--dl);margin:8px -14px 0;padding:16px 14px 0}
+.sec h4{margin:0;font-size:16px;font-weight:600}
+.sec .sub{font-size:13px;color:var(--g500);margin-top:2px}
+.ulist{border:1px solid var(--g200);border-radius:8px;max-height:340px;overflow-y:auto;margin-top:10px}
+.urow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--g100);cursor:pointer}
+.urow:last-child{border-bottom:none}
+.urow:hover{background:var(--g50)}
+.urow.lock{cursor:default;background:var(--g50)}
+.urow .nm{font-weight:500;font-size:14px}
+.urow .pl{font-size:12px;color:var(--g500)}
+.urow .rs{margin-left:auto;text-align:right;max-width:55%}
+.filters{display:flex;gap:8px;margin-top:10px}
+.filters .sel,.filters .in{width:auto;flex:1}
+
+/* checkbox (ThreeStateCheckbox look) */
+.cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--g400);background:#fff;display:inline-grid;place-items:center;cursor:pointer;flex:none;transition:.2s}
+.cb svg{width:16px;height:16px;opacity:0}
+.cb.on{background:var(--p);border-color:var(--p)}
+.cb.on svg{opacity:1}
+.cb.dis{cursor:not-allowed;opacity:.55}
+.cb.dis.on{background:var(--g400);border-color:var(--g400)}
+.cb.big{width:28px;height:28px}
+.cb.big svg{width:22px;height:22px}
+
+/* role picker */
+.rgroup{margin-top:10px}
+.rgroup .gh{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);font-weight:600;margin:6px 0}
+.ropt{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;cursor:pointer}
+.ropt:hover{background:var(--g50)}
+.ropt.on{border-color:var(--p);background:#fff7f3}
+.ropt.dis{cursor:not-allowed;opacity:.5}
+.ropt .rn{font-size:14px;font-weight:500}
+.ropt .rd{font-size:12px;color:var(--g500);line-height:1.3}
+
+/* role drawer (CreateRoleDrawer) */
+.rov{position:fixed;inset:0;background:#00000080;z-index:60;display:flex;justify-content:flex-end}
+.rdr{height:100vh;width:min(1280px,calc(100vw - 60px));background:#fff;display:flex;flex-direction:column}
+.rdr .h{height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--dl);padding:0 20px;font-size:18px;font-weight:600}
+.rdr .b{flex:1;display:flex;min-height:0}
+.rdr .stp{width:260px;flex:none;border-right:2px solid var(--dl);display:flex;align-items:center;justify-content:center}
+.vs .s{display:flex;align-items:flex-start}
+.vs .c{display:flex;flex-direction:column;align-items:center}
+.vs .d{margin:10px 0;width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.vs .d.cur,.vs .d.done{background:var(--p)}
+.vs .d.todo{border:2px solid var(--g400)}
+.vs .ln{height:100px;width:2px;background:var(--g300)}
+.vs .ln.done{background:var(--p)}
+.vs .lb2{margin:10px 0 0 16px;width:150px;font-size:18px;color:var(--g500);cursor:pointer}
+.vs .lb2.cur{font-weight:700;color:#000}
+.rdr .ct{flex:1;overflow-y:auto;min-width:0}
+.rdr .f{min-height:64px;display:flex;justify-content:space-between;align-items:center;border-top:4px solid var(--dl);padding:0 16px 0 276px}
+.rdr .f .l{display:flex;gap:16px;align-items:center}
+.basic{display:flex;flex-direction:column;gap:16px;padding:40px 80px 40px 40px}
+.basic .hh{font-size:30px;font-weight:700}
+.basic .pp{font-size:20px}
+.basic .fld{padding:0 12px}
+.basic .fld .lb{font-size:18px;font-weight:500;margin-bottom:8px}
+.basic .in{font-size:16px;padding:12px 14px;border-radius:8px}
+.perm{margin:16px;border-radius:8px;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);padding:16px}
+.perm h2{margin:0 0 6px;font-size:20px;font-weight:700}
+.perm .ds{margin:0 0 20px;font-size:16px}
+.gh2{position:sticky;top:0;z-index:2;display:flex;background:#fff;border-bottom:2px solid var(--g200);padding:0 16px 6px 18px;margin-bottom:6px}
+.gh2 .r{flex:1;font-size:18px;font-weight:700}
+.gh2 .c{width:110px;text-align:center;font-size:18px;font-weight:700}
+.prow{display:flex;align-items:center;padding:10px 16px;border-radius:8px}
+.prow:hover{background:var(--g100)}
+.prow .r{flex:1;min-width:0}
+.prow .r b{font-weight:600}
+.prow .r small{display:block;color:var(--g500);font-size:13px}
+.prow .c{width:110px;display:flex;justify-content:center}
+.prow.sp{padding-top:2px;padding-bottom:12px}
+.swl{display:flex;align-items:center;gap:12px;padding-left:24px;font-size:14px;color:var(--g700)}
+.sw{width:40px;height:22px;border-radius:22px;background:var(--g300);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .2s}
+.sw.on{background:var(--p)}
+.sw.on::after{transform:translateX(18px)}
+.sw.dis{cursor:not-allowed;opacity:.5}
+.scope{margin:16px;border:1px solid var(--g200);border-radius:8px;padding:16px 20px}
+.scope h3{margin:0 0 8px;font-size:18px}
+.scope ul{margin:0;padding-left:20px;line-height:1.9}
+
+/* org tree */
+.tree td:first-child{text-align:left;padding-left:16px}
+.tree .lv1 td:first-child{padding-left:16px;font-weight:600}
+.tree .lv2 td:first-child{padding-left:52px}
+.tree .lv3 td:first-child{padding-left:88px;color:var(--g700)}
+.tree .chev{display:inline-block;width:18px;cursor:pointer;color:var(--g500);transition:transform .15s}
+.tree .chev.closed{transform:rotate(-90deg)}
+.tree .lvl{font-size:12px;color:var(--g500);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.tree tr.lv1{background:#fff8f5}
+
+/* modal */
+.mbk{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:80;display:grid;place-items:center}
+.mdl{background:#fff;border-radius:10px;width:min(520px,92vw);box-shadow:0 20px 40px rgba(0,0,0,.2)}
+.mdl .mh{display:flex;justify-content:space-between;padding:16px 20px;font-size:18px;font-weight:600;border-bottom:1px solid var(--g200)}
+.mdl .mb{padding:20px;font-size:15px}
+.mdl .mf{display:flex;justify-content:flex-end;gap:12px;padding:12px 20px 18px}
+
+/* toast (react-hot-toast) */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#fff;color:#363636;box-shadow:0 3px 10px rgba(0,0,0,.1),0 3px 3px rgba(0,0,0,.05);padding:8px 12px;border-radius:8px;font-size:14px;z-index:99;display:flex;gap:10px;align-items:center;max-width:520px}
+.toast i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:#fff;font-style:normal;font-size:12px;flex:none}
+.toast i.ok{background:#61d345}.toast i.no{background:#ff4b4b}
+
+/* misc pages */
+.stub{margin:20px;border:1px solid var(--g200);border-radius:8px;padding:24px;max-width:720px}
+.stub h3{margin:0 0 6px}
+.k{display:inline-block;padding:1px 6px;border-radius:4px;background:var(--g100);font-size:12px;color:var(--g600)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ======================= ICONS ======================= */
+const I={
+  folder:'<svg width="22" height="22" viewBox="0 0 20 16"><path fill="#f4f7f7" d="M1.5 3C1.5 2.17 2.17 1.5 3 1.5H7L8.5 3H17c.83 0 1.5.67 1.5 1.5V13c0 .83-.67 1.5-1.5 1.5H3c-.83 0-1.5-.67-1.5-1.5V3Z"/></svg>',
+  org:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f4f7f7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-3h14v3"/></svg>',
+  users:'<svg width="20" height="16" viewBox="0 0 20 16"><path fill="#f4f7f7" d="M19 .5H1a.75.75 0 0 0-.75.75v13.5c0 .41.34.75.75.75h18c.41 0 .75-.34.75-.75V1.25A.75.75 0 0 0 19 .5ZM6.25 9.5v-3h7.5v3h-7.5Zm-4.5 0v-3h3v3h-3Zm13.5-3h3v3h-3v-3Zm3-1.5h-7.5V2h7.5v3Zm-9-3v3h-7.5V2h7.5Zm-7.5 9h7.5v3h-7.5v-3Zm9 3v-3h7.5v3h-7.5Z"/></svg>',
+  edge:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f4f7f7" stroke-width="1.7" stroke-linecap="round"><path d="M12 3v12m0 0-4.5-4.5M12 15l4.5-4.5M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>',
+  chat:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke="#f4f7f7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  recipe:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>',
+  data:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+  model:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>',
+  inst:'<svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>',
+  home:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>',
+  fopen:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>',
+  dots:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>',
+  pen:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+  trash:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>',
+  dl:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 19h16"/></svg>',
+  lock:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  eye:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  key:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M19 4l2 2"/></svg>',
+  plus:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  chev:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>',
+  swap:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#bdbdbd" stroke-width="2" stroke-linecap="round"><path d="M7 15l5 5 5-5M7 9l5-5 5 5"/></svg>',
+  info:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff4301" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+};
+
+/* ======================= DATA ======================= */
+const AREAS=[
+  {id:'project',name:'Project Management',row:'Project Details',note:'Create projects, name, classes, project access',cols:['create','edit','delete'],specials:[]},
+  {id:'recipe',name:'Recipe Management',row:'Recipe',note:'Variants, cameras, captures, modules',cols:['create','edit','delete'],specials:[]},
+  {id:'datasets',name:'Datasets Management',row:'Datasets',note:'Upload, organise, download images',cols:['create','edit','delete','download'],specials:[{id:'pretrain',name:'Run pre-training analysis'}]},
+  {id:'annotation',name:'Annotation',row:'Annotations',note:'Create = start annotating existing images',cols:['create','edit','delete','download'],specials:[{id:'autoann',name:'Run auto-annotation'}]},
+  {id:'models',name:'AI Models',row:'AI Models',note:'Create = train · Edit = thresholds',cols:['create','edit','delete','download'],specials:[]},
+  {id:'instances',name:'Instance Management',row:'Instances',note:'Download = instance package',cols:['create','edit','delete','download'],specials:[{id:'edge',name:'FrinksEdge Download'}]},
+  {id:'license',name:'License Download',row:'Demo License',note:'Download demo licenses',cols:['download'],specials:[]},
+];
+const COLS=[['create','Create'],['view','View'],['edit','Edit'],['delete','Delete'],['download','Download']];
+const ALL_SPECIALS=AREAS.flatMap(a=>a.specials);
+
+let uid=100; const nid=p=>p+(++uid);
+const D={
+  plants:[{id:'p1',name:'Pune'},{id:'p2',name:'Chennai'}],
+  divs:[{id:'d1',name:'Body Shop',plant:'p1'},{id:'d2',name:'Paint Shop',plant:'p1'},{id:'d3',name:'Assembly',plant:'p2'},{id:'d4',name:'Quality',plant:'p2'}],
+  subs:[{id:'s1',name:'Line A',div:'d1'},{id:'s2',name:'Line B',div:'d1'},{id:'s3',name:'Line C',div:'d2'},{id:'s4',name:'Line 1',div:'d3'},{id:'s5',name:'Line 2',div:'d3'},{id:'s6',name:'Final Audit',div:'d4'}],
+  roles:[
+    {id:'org_admin',name:'Org Admin',kind:'admin',level:'org',desc:'Full access across the organization'},
+    {id:'plant_admin',name:'Plant Admin',kind:'admin',level:'plant',desc:'Full access within their plant'},
+    {id:'div_admin',name:'Division Admin',kind:'admin',level:'div',desc:'Full access within their division'},
+    ...AREAS.map(a=>({id:'r_'+a.id,name:a.name,kind:'builtin',area:a.id,desc:a.note})),
+    {id:'c_line',name:'Line Engineer',kind:'custom',desc:'Recipe and dataset work on the line',perms:mkPerms({recipe:['create','edit'],datasets:['create','edit','download']},['pretrain'])},
+  ],
+  users:[
+    {id:'u1',name:'Ananya Rao',email:'ananya.rao@acme.example',phone:'9800000001',plant:null,div:null,sub:null,roles:['org_admin'],status:'Active'},
+    {id:'u2',name:'Rahul Mehta',email:'rahul.mehta@acme.example',phone:'9800000002',plant:'p1',div:null,sub:null,roles:['plant_admin'],status:'Active'},
+    {id:'u3',name:'Kavya Iyer',email:'kavya.iyer@acme.example',phone:'9800000003',plant:'p2',div:'d3',sub:null,roles:['div_admin'],status:'Active'},
+    {id:'u4',name:'Vikram Shah',email:'vikram.shah@acme.example',phone:'9800000004',plant:'p1',div:'d1',sub:'s1',roles:['r_project','r_recipe'],status:'Active'},
+    {id:'u5',name:'Priya Nair',email:'priya.nair@acme.example',phone:'9800000005',plant:'p1',div:'d1',sub:'s2',roles:['r_annotation','r_datasets'],status:'Active'},
+    {id:'u6',name:'Arjun Das',email:'arjun.das@acme.example',phone:'9800000006',plant:'p2',div:'d3',sub:'s4',roles:['r_instances','r_license'],status:'Active'},
+    {id:'u7',name:'Meera Joshi',email:'meera.joshi@acme.example',phone:'9800000007',plant:'p2',div:'d4',sub:'s6',roles:['r_models'],status:'Active'},
+    {id:'u8',name:'Sanjay Kulkarni',email:'sanjay.k@acme.example',phone:'9800000008',plant:'p1',div:'d2',sub:'s3',roles:['c_line'],status:'Active'},
+    {id:'u9',name:'Deepa Menon',email:'deepa.menon@acme.example',phone:'9800000009',plant:'p2',div:'d3',sub:'s5',roles:['r_annotation'],status:'Invited'},
+  ],
+  projects:[
+    {id:'pr1',name:'Door Panel Inspection',desc:'Dent and scratch check on front and rear door panels',createdBy:'u4',createdAt:'Sep 18, 2026',members:['u4','u5','u6','u8'],
+      variants:[{name:'Front Door',caps:[['Camera 1','Top View',3],['Camera 2','Edge View',2]]},{name:'Rear Door',caps:[['Camera 1','Top View',3]]}],
+      datasets:[['Front Door | Top View',420,380],['Front Door | Edge View',260,120],['Rear Door | Top View',310,310]],
+      models:[['ODC_FrontDoor_12-10','Object Detection','Oct 12, 2026','Trained','0.94'],['SEG_Edge_08-10','Segmentation','Oct 8, 2026','Trained','0.89']],
+      instances:[{id:'i1',name:'DP_Pune_LineA',plant:'p1',div:'d1',sub:'s1',date:'Oct 2, 2026',valid:'Apr 2, 2027',iid:'7f3a91'},{id:'i2',name:'DP_Pune_LineB',plant:'p1',div:'d1',sub:'s2',date:'Oct 5, 2026',valid:'Apr 5, 2027',iid:'b21c04'},{id:'i3',name:'DP_Chennai_L1',plant:'p2',div:'d3',sub:'s4',date:'Oct 9, 2026',valid:'Apr 9, 2027',iid:'e88d10'}]},
+    {id:'pr2',name:'Weld Seam Check',desc:'Seam continuity and spatter detection',createdBy:'u1',createdAt:'Aug 30, 2026',members:['u5','u7'],
+      variants:[{name:'Chassis',caps:[['Camera 1','Seam Left',2],['Camera 2','Seam Right',2]]}],
+      datasets:[['Chassis | Seam Left',540,500],['Chassis | Seam Right',510,470]],
+      models:[['SEG_Seam_02-10','Segmentation','Oct 2, 2026','Trained','0.91']],
+      instances:[{id:'i4',name:'WS_Pune_BodyShop',plant:'p1',div:'d1',sub:null,date:'Sep 21, 2026',valid:'Mar 21, 2027',iid:'5c0e7a'},{id:'i5',name:'WS_Chennai',plant:'p2',div:null,sub:null,date:'Sep 25, 2026',valid:'Mar 25, 2027',iid:'91aa3f'}]},
+    {id:'pr3',name:'Final Audit OCR',desc:'Label and VIN plate reading at final audit',createdBy:'u3',createdAt:'Oct 1, 2026',members:['u6','u7','u9'],
+      variants:[{name:'Sedan',caps:[['Camera 1','Label',1]]}],
+      datasets:[['Sedan | Label',300,150]],
+      models:[['OCR-D_Label_10-10','OCR Detection','Oct 10, 2026','Training','—']],
+      instances:[{id:'i6',name:'FA_Chennai_Audit',plant:'p2',div:'d4',sub:'s6',date:'Oct 11, 2026',valid:'Apr 11, 2027',iid:'3d7b22'},{id:'i7',name:'FA_Chennai_L2',plant:'p2',div:'d3',sub:'s5',date:'Oct 12, 2026',valid:'Apr 12, 2027',iid:'c4e019'}]},
+    {id:'pr4',name:'Paint Defects',desc:'Orange peel, runs and dust spots after paint booth',createdBy:'u2',createdAt:'Oct 7, 2026',members:['u8'],
+      variants:[{name:'Hood',caps:[['Camera 1','Full Panel',2]]}],
+      datasets:[['Hood | Full Panel',150,40]],models:[],
+      instances:[{id:'i8',name:'PD_Pune_LineC',plant:'p1',div:'d2',sub:'s3',date:'Oct 13, 2026',valid:'Apr 13, 2027',iid:'0aa6d5'}]},
+  ],
+};
+function mkPerms(map,specials){const a={};AREAS.forEach(ar=>{a[ar.id]={};ar.cols.forEach(c=>a[ar.id][c]=!!(map[ar.id]||[]).includes(c))});const s={};ALL_SPECIALS.forEach(x=>s[x.id]=(specials||[]).includes(x.id));return {areas:a,specials:s};}
+function viewOnlyPerms(){return mkPerms({},[]);}
+
+/* ======================= STATE ======================= */
+const S={me:'u1',page:'projects',pid:null,ptab:'recipe',menu:null,whoOpen:false,drawer:null,modal:null,toast:null,closed:{},ufilter:{plant:'',q:''}};
+
+/* ======================= HELPERS ======================= */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const U=id=>D.users.find(u=>u.id===id);
+const R=id=>D.roles.find(r=>r.id===id);
+const P=id=>D.projects.find(p=>p.id===id);
+const plantN=id=>id?(D.plants.find(x=>x.id===id)||{}).name:'—';
+const divN=id=>id?(D.divs.find(x=>x.id===id)||{}).name:'—';
+const subN=id=>id?(D.subs.find(x=>x.id===id)||{}).name:'—';
+const initials=n=>n.split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();
+const me=()=>U(S.me);
+function adminLevel(u){let best=null;u.roles.forEach(r=>{const l=(R(r)||{}).level;if(l&&(!best||{org:3,plant:2,div:1}[l]>{org:3,plant:2,div:1}[best]))best=l;});return best;}
+const isAdmin=u=>!!adminLevel(u);
+function rolePerms(r){if(r.kind==='builtin'){const ar=AREAS.find(a=>a.id===r.area);return mkPerms({[ar.id]:ar.cols},ar.specials.map(s=>s.id));}return r.perms||viewOnlyPerms();}
+function perms(u){
+  if(isAdmin(u)) return mkPerms(Object.fromEntries(AREAS.map(a=>[a.id,a.cols])),ALL_SPECIALS.map(s=>s.id));
+  const out=viewOnlyPerms();
+  u.roles.forEach(id=>{const r=R(id);if(!r)return;const p=rolePerms(r);AREAS.forEach(a=>a.cols.forEach(c=>{if(p.areas[a.id][c])out.areas[a.id][c]=true}));ALL_SPECIALS.forEach(s=>{if(p.specials[s.id])out.specials[s.id]=true})});
+  return out;
+}
+const can=(area,col,u=me())=>!!perms(u).areas[area][col];
+const canS=(sid,u=me())=>!!perms(u).specials[sid];
+function scope(u){const l=adminLevel(u);if(l==='org')return {};if(l==='plant')return {plant:u.plant};if(l==='div')return {plant:u.plant,div:u.div};return {plant:u.plant,div:u.div,sub:u.sub};}
+function instVisible(inst,u=me()){const s=scope(u);for(const k of ['plant','div','sub']){if(s[k]&&inst[k]&&s[k]!==inst[k])return false;}return true;}
+function projVisible(p,u=me()){return isAdmin(u)||p.members.includes(u.id);}
+function userInScope(t,u=me()){const l=adminLevel(u);if(l==='org')return true;if(l==='plant')return t.plant===u.plant;if(l==='div')return t.plant===u.plant&&t.div===u.div;return false;}
+function canEditUser(t,u=me()){if(!isAdmin(u)||!userInScope(t,u))return false;const tl=adminLevel(t);if(!tl)return true;const rk={org:3,plant:2,div:1};return rk[tl]<=rk[adminLevel(u)];}
+function assignable(role,u=me()){const l=adminLevel(u);if(!l)return false;if(role.kind!=='admin')return true;const rk={org:3,plant:2,div:1};return rk[role.level]<=rk[l];}
+function canManageAccess(p,u=me()){return isAdmin(u)||(p.members.includes(u.id)&&(can('project','edit',u)||p.createdBy===u.id));}
+function canEditProject(p,u=me()){return isAdmin(u)||can('project','edit',u)||p.createdBy===u.id;}
+function canDeleteProject(p,u=me()){return isAdmin(u)||can('project','delete',u)||p.createdBy===u.id;}
+function canCreateProject(u=me()){return isAdmin(u)||can('project','create',u);}
+function rolesLine(u){return u.roles.map(r=>(R(r)||{}).name).filter(Boolean).join(', ');}
+function placement(u){if(adminLevel(u)==='org')return 'All plants';return [plantN(u.plant),u.div?divN(u.div):null,u.sub?subN(u.sub):null].filter(Boolean).join(' / ');}
+function roleChip(id){const r=R(id);if(!r)return '';return `<span class="chip ${r.kind==='admin'?'adm':r.kind==='custom'?'cus':''}">${esc(r.name)}</span>`;}
+function usersWithRole(id){return D.users.filter(u=>u.roles.includes(id));}
+function cb(on,attrs='',cls=''){return `<span class="cb ${on?'on':''} ${cls}" ${attrs}>${I.check}</span>`;}
+function toast(msg,ok=true){S.toast={msg,ok};clearTimeout(window.__t);window.__t=setTimeout(()=>{S.toast=null;render()},2600);}
+function allowedPage(pg){const u=me();if(pg==='org'||pg==='users'||pg==='roles')return isAdmin(u);if(pg==='edge')return isAdmin(u)||canS('edge');return true;}
+
+/* ======================= SIDEBAR ======================= */
+function sidebar(){
+  const u=me(),adm=isAdmin(u);
+  const mi=(pg,ic,t)=>`<li class="mi ${S.page===pg?'active':''}" data-a="go" data-pg="${pg}"><span class="ic">${ic}</span><span class="t">${t}</span></li>`;
+  let h=`<aside class="side"><div class="logo">frinks<b>.</b>ai</div><ul class="menu">`;
+  h+=mi('projects',I.folder,'Projects');
+  if(adm) h+=mi('org',I.org,'Plants &amp; Divisions');
+  if(adm) h+=`<li><div class="mi" style="cursor:default"><span class="ic">${I.users}</span><span class="t">Users &amp; Permissions</span></div><ul class="subm">${mi('users','','Users')}${mi('roles','','Roles')}</ul></li>`;
+  if(adm||canS('edge')) h+=mi('edge',I.edge,'FrinksEdge Download');
+  h+=mi('manual',I.chat,'Manual Assistant');
+  h+=`</ul>${whoBox()}</aside>`;
+  return h;
+}
+function whoBox(){
+  const u=me();
+  let h=`<div class="who"><div class="whob" data-a="who"><div class="av">${initials(u.name)}</div><div style="min-width:0;flex:1"><div class="nm">${esc(u.name)}</div><div class="rl">${esc(rolesLine(u))}</div></div>${I.swap}</div>`;
+  if(S.whoOpen){
+    h+=`<div class="whomenu"><div class="h">Switch user (prototype)</div>`+D.users.filter(x=>x.status!=='Inactive').map(x=>`<div class="it ${x.id===S.me?'on':''}" data-a="as" data-id="${x.id}"><div class="av">${initials(x.name)}</div><div><div>${esc(x.name)}</div><small>${esc(rolesLine(x))} · ${esc(placement(x))}</small></div></div>`).join('')+`</div>`;
+  }
+  return h+`</div>`;
+}
+
+/* ======================= PROJECTS ======================= */
+function pageProjects(){
+  const u=me();const vis=D.projects.filter(p=>projVisible(p));
+  const showLic=isAdmin(u)||can('license','download');
+  let h=`<div class="heading"><div class="t">Projects</div><div class="acts">${showLic?`<button class="btn md" data-a="lic">Download Demo License</button>`:''}</div></div><div class="pad"><div class="grid">`;
+  if(canCreateProject()) h+=`<div class="create" data-a="newProject"><div class="pl">+</div><h3>Start a new project</h3><p>Click to create</p></div>`;
+  vis.forEach(p=>{
+    const c=U(p.createdBy);const mOpen=S.menu==='pc_'+p.id;
+    const items=[];if(canManageAccess(p))items.push(`<li data-a="access" data-id="${p.id}">${I.key} Manage Access</li>`);if(canDeleteProject(p))items.push(`<li class="red" data-a="delProject" data-id="${p.id}">${I.trash} Delete</li>`);
+    h+=`<div class="card">
+      ${items.length?`<div class="menu3 ${mOpen?'open':''}"><span class="dd"><span class="ib" data-a="menu" data-id="pc_${p.id}">${I.dots}</span>${mOpen?`<ul class="ddm" style="right:0;top:32px">${items.join('')}</ul>`:''}</span></div>`:''}
+      <div class="top"><div class="ico">${I.fopen}</div><div><h3>${esc(p.name)}</h3><div class="desc">${esc(p.desc||'No description provided.')}</div><div class="mem">${p.members.length} member${p.members.length===1?'':'s'} · ${p.instances.filter(i=>instVisible(i)).length} instance(s) visible to you</div></div></div>
+      <div class="bot"><div class="by"><div class="av">${initials(c?c.name:'UN')}</div>${esc(c?c.name:'Unknown')}</div><div class="dt"><i></i>${esc(p.createdAt)}</div></div>
+      <div class="ov">${canEditProject(p)?`<button class="btn bd" style="background:#fff" data-a="editProject" data-id="${p.id}">Edit</button>`:''}<button class="btn" data-a="open" data-id="${p.id}">Open</button></div>
+    </div>`;
+  });
+  h+=`</div>`;
+  if(!vis.length&&!canCreateProject()) h+=`<div class="noacc">${I.info}<div>You have not been added to any project yet. Please contact your administrator.</div></div>`;
+  return h+`</div>`;
+}
+
+/* ======================= INSIDE A PROJECT ======================= */
+function rail(){
+  const it=(t,ic,n)=>`<li><div class="ri ${S.ptab===t?'active':''}" data-a="ptab" data-t="${t}">${ic}</div><div class="tip">${n}</div></li>`;
+  return `<aside class="rail"><div class="lg" data-a="go" data-pg="projects">f<b>.</b></div><ul>${it('recipe',I.recipe,'Recipe Management')}${it('data',I.data,'Datasets &amp; Annotations')}${it('models',I.model,'AI Models')}${it('instances',I.inst,'Instances')}</ul><div class="bottom"><ul style="margin:0"><li><div class="ri" data-a="go" data-pg="projects">${I.home}</div><div class="tip">All projects</div></li></ul></div></aside>`;
+}
+function crumb(p,label){return `<div class="crumb"><span class="lnk" data-a="go" data-pg="projects">Projects</span>›<span class="lnk" data-a="ptab" data-t="recipe">${esc(p.name)}</span>›<span class="cur">${label}</span></div>`;}
+const act=(ok,a,label,extra='')=>ok?`<button class="btn ssm bd" data-a="${a}" ${extra}>${label}</button>`:'';
+function pageProject(){
+  const p=P(S.pid);if(!p)return '';
+  const t=S.ptab;
+  if(t==='recipe'){
+    const rows=p.variants.flatMap((v,vi)=>v.caps.map((c,ci)=>`<tr><td>${esc(v.name)}</td><td>${esc(c[0])}</td><td>${esc(c[1])}</td><td>${c[2]}</td><td><div class="ia">${act(true,'stub','View','data-m="Recipe opened (read-only)"')}${act(can('recipe','edit'),'stub','Configure','data-m="Module configuration opened"')}${can('recipe','delete')?`<span class="ib red" data-a="stub" data-m="Capture deleted">${I.trash}</span>`:''}</div></td></tr>`)).join('');
+    return `<div class="heading">${crumb(p,'Recipe Management')}</div><div class="bar"><div class="l"></div><div class="l">${can('recipe','create')?`<button class="btn" data-a="stub" data-m="Add Variant opened">${I.plus} Add Variant</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Variant</th><th>Camera</th><th>Capture</th><th>Modules</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="empty">No recipes yet</td></tr>'}</tbody></table></div></div>`;
+  }
+  if(t==='data'){
+    const rows=p.datasets.map(d=>`<tr><td>${esc(d[0])}</td><td>${d[1]}</td><td>${d[2]}</td><td><div class="ia">
+      ${act(can('datasets','create'),'stub','Upload','data-m="Upload Images opened"')}
+      ${act(can('annotation','create')||can('annotation','edit'),'stub','Annotate','data-m="Annotation tool opened"')}
+      ${act(canS('autoann'),'stub','Auto-annotate','data-m="Auto-annotation started"')}
+      ${can('datasets','download')||can('annotation','download')?`<span class="ib" data-a="stub" data-m="Download started">${I.dl}</span>`:''}
+      ${can('datasets','delete')?`<span class="ib red" data-a="stub" data-m="Dataset deleted">${I.trash}</span>`:''}
+      ${!can('datasets','create')&&!can('annotation','edit')&&!can('annotation','create')?act(true,'stub','View','data-m="Dataset opened (read-only)"'):''}</div></td></tr>`).join('');
+    return `<div class="heading">${crumb(p,'Datasets &amp; Annotations')}</div><div class="bar"><div class="l"></div><div class="l">${canS('pretrain')?`<button class="btn bd" data-a="stub" data-m="Pre-training analysis started">Run Pre-training Analysis</button>`:''}${can('datasets','create')?`<button class="btn" data-a="stub" data-m="Create Dataset opened">${I.plus} Create Dataset</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Dataset</th><th>Images</th><th>Annotated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="empty">No datasets yet</td></tr>'}</tbody></table></div></div>`;
+  }
+  if(t==='models'){
+    const rows=p.models.map(m=>`<tr><td>${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3]}</td><td>${m[4]}</td><td><div class="ia">${act(true,'stub','Results','data-m="Training results opened"')}${act(can('models','edit'),'stub','Edit Thresholds','data-m="Threshold editor opened"')}${can('models','download')?`<span class="ib" data-a="stub" data-m="Model download started">${I.dl}</span>`:''}${can('models','delete')?`<span class="ib red" data-a="stub" data-m="Model deleted">${I.trash}</span>`:''}</div></td></tr>`).join('');
+    return `<div class="heading">${crumb(p,'AI Models')}</div><div class="bar"><div class="l"></div><div class="l">${can('models','create')?`<button class="btn" data-a="stub" data-m="Train AI Model opened">${I.plus} Train AI Model</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Model Name</th><th>Type</th><th>Date</th><th>Status</th><th>mAP</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">No models trained yet</td></tr>'}</tbody></table></div></div>`;
+  }
+  // instances
+  const vis=p.instances.filter(i=>instVisible(i));
+  const rows=vis.map(i=>`<tr><td><span class="link">${esc(i.name)}</span></td><td>${i.date}</td><td>${i.valid}</td><td>${plantN(i.plant)}</td><td>${divN(i.div)}</td><td>${subN(i.sub)}</td><td><span class="k">${i.iid}</span></td><td>${can('instances','download')?`<span class="ib" data-a="stub" data-m="Instance package download started">${I.dl}</span>`:'<span style="color:var(--g400)">—</span>'}</td><td><div class="ia">${can('instances','edit')?`<span class="ib" data-a="stub" data-m="Edit instance opened">${I.pen}</span>`:''}${can('instances','delete')?`<span class="ib red" data-a="delInst" data-id="${i.id}">${I.trash}</span>`:''}${!can('instances','edit')&&!can('instances','delete')?'<span style="color:var(--g400)">—</span>':''}</div></td></tr>`).join('');
+  return `<div class="heading">${crumb(p,'Instances')}</div><div class="bar"><div class="l"></div><div class="l">${can('instances','create')?`<button class="btn" data-a="newInst">${I.plus} Create Instance</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Instance Name</th><th>Date Created</th><th>Validity</th><th>Plant</th><th>Division</th><th>Sub-division</th><th>Instance ID</th><th>Download</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="9" class="empty">No instances in your plant / division</td></tr>'}</tbody></table></div></div>`;
+}
+
+/* ======================= ORG STRUCTURE ======================= */
+function orgCaps(kind,obj){ // what me() can do on a node
+  const u=me(),l=adminLevel(u);
+  if(l==='org')return true;
+  if(kind==='plant')return false; // only org admins add/rename/delete plants
+  if(kind==='div'){return l==='plant'&&obj.plant===u.plant;}
+  if(kind==='sub'){const d=D.divs.find(x=>x.id===obj.div);return (l==='plant'&&d.plant===u.plant)||(l==='div'&&obj.div===u.div);}
+  return false;
+}
+function canAddInto(kind,obj){const u=me(),l=adminLevel(u);if(l==='org')return true;if(kind==='plant')return l==='plant'&&obj.id===u.plant;if(kind==='div')return (l==='plant'&&obj.plant===u.plant)||(l==='div'&&obj.id===u.div);return false;}
+function countUsers(k,id){return D.users.filter(u=>u.status!=='Inactive'&&u[k]===id).length;}
+function countInst(k,id){return D.projects.reduce((n,p)=>n+p.instances.filter(i=>i[k]===id).length,0);}
+function pageOrg(){
+  const l=adminLevel(me());
+  const acts=(kind,obj,addLabel,addKind)=>`<div class="ia">${addKind&&canAddInto(kind,obj)?`<button class="btn ssm" data-a="addUnit" data-k="${addKind}" data-parent="${obj.id}">+ ${addLabel}</button>`:''}${orgCaps(kind,obj)?`<span class="ib" data-a="renUnit" data-k="${kind}" data-id="${obj.id}" title="Rename">${I.pen}</span><span class="ib red" data-a="delUnit" data-k="${kind}" data-id="${obj.id}" title="Delete">${I.trash}</span>`:''}</div>`;
+  let rows='';
+  D.plants.forEach(pl=>{
+    const pc=S.closed['pl_'+pl.id];
+    rows+=`<tr class="lv1"><td><span class="chev ${pc?'closed':''}" data-a="tog" data-id="pl_${pl.id}">${I.chev}</span> ${esc(pl.name)}</td><td class="lvl">Plant</td><td>${countUsers('plant',pl.id)}</td><td>${countInst('plant',pl.id)}</td><td>${acts('plant',pl,'Division','div')}</td></tr>`;
+    if(pc)return;
+    D.divs.filter(d=>d.plant===pl.id).forEach(d=>{
+      const dc=S.closed['dv_'+d.id];
+      rows+=`<tr class="lv2"><td><span class="chev ${dc?'closed':''}" data-a="tog" data-id="dv_${d.id}">${I.chev}</span> ${esc(d.name)}</td><td class="lvl">Division</td><td>${countUsers('div',d.id)}</td><td>${countInst('div',d.id)}</td><td>${acts('div',d,'Sub-division','sub')}</td></tr>`;
+      if(dc)return;
+      D.subs.filter(s=>s.div===d.id).forEach(s=>{rows+=`<tr class="lv3"><td>${esc(s.name)}</td><td class="lvl">Sub-division</td><td>${countUsers('sub',s.id)}</td><td>${countInst('sub',s.id)}</td><td>${acts('sub',s)}</td></tr>`;});
+    });
+  });
+  return `<div class="heading"><div class="t">Plants &amp; Divisions</div><div class="acts">${l==='org'?`<button class="btn" data-a="addUnit" data-k="plant">Add Plant</button>`:''}</div></div><div class="pad"><div class="tw"><table class="t tree"><thead><tr><th style="text-align:left;padding-left:16px">Name</th><th>Level</th><th>Users</th><th>Instances</th><th style="width:300px">Actions</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+/* ======================= USERS ======================= */
+function pageUsers(){
+  const u=me();const f=S.ufilter;
+  const plantsInScope=adminLevel(u)==='org'?D.plants:D.plants.filter(p=>p.id===u.plant);
+  let list=D.users.filter(t=>userInScope(t)||t.id===u.id);
+  if(f.plant)list=list.filter(t=>t.plant===f.plant);
+  if(f.q)list=list.filter(t=>(t.name+t.email).toLowerCase().includes(f.q.toLowerCase()));
+  const rows=list.map(t=>{
+    const mOpen=S.menu==='u_'+t.id;const ed=canEditUser(t);const items=[];
+    if(ed)items.push(`<li data-a="editUser" data-id="${t.id}">${I.pen} Edit</li>`);
+    if(ed&&t.id!==u.id)items.push(t.status==='Inactive'?`<li data-a="actUser" data-id="${t.id}">Activate</li>`:`<li class="red" data-a="deactUser" data-id="${t.id}">${I.trash} Deactivate</li>`);
+    if(t.status==='Invited'&&ed)items.push(`<li data-a="stub" data-m="Invite re-sent to ${esc(t.email)}">Resend Invite</li>`);
+    return `<tr class="${t.status==='Inactive'?'dim':''}"><td>${esc(t.name)}${t.id===u.id?' <span class="chip gray">You</span>':''}</td><td>${esc(t.email)}</td><td>${adminLevel(t)==='org'?'All':plantN(t.plant)}</td><td>${adminLevel(t)==='org'||adminLevel(t)==='plant'?'All':divN(t.div)}</td><td>${adminLevel(t)?'All':subN(t.sub)}</td><td style="max-width:260px">${t.roles.map(roleChip).join('')}</td><td><span class="st ${t.status}">${t.status}</span></td><td>${items.length?`<span class="dd"><span class="ib" data-a="menu" data-id="u_${t.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
+  }).join('');
+  return `<div class="heading"><div class="t">Users</div><div class="acts"><button class="btn" data-a="newUser">Add User</button></div></div>
+  <div class="bar" style="padding-top:8px"><div class="l"><select class="sel" style="width:200px" data-a="uf" data-f="plant"><option value="">All plants</option>${plantsInScope.map(p=>`<option value="${p.id}" ${f.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select><input class="in" style="width:260px" placeholder="Search name or email" data-uq value="${esc(f.q)}"></div></div>
+  <div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>User Name</th><th>Email</th><th>Plant</th><th>Division</th><th>Sub-division</th><th>Role(s)</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="empty">No users found</td></tr>'}</tbody></table></div></div>`;
+}
+
+/* ======================= ROLES ======================= */
+function pageRoles(){
+  const rows=D.roles.map(r=>{
+    const n=usersWithRole(r.id).filter(u=>u.status!=='Inactive').length;const mOpen=S.menu==='r_'+r.id;
+    const items=[`<li data-a="viewRole" data-id="${r.id}">${I.eye} View</li>`];
+    if(r.kind==='custom'){items.push(`<li data-a="editRole" data-id="${r.id}">${I.pen} Edit</li>`,`<li class="red" data-a="delRole" data-id="${r.id}">${I.trash} Delete</li>`);}
+    const type=r.kind==='admin'?'<span class="chip adm">Admin</span>':r.kind==='builtin'?'<span class="chip">Built-in</span>':'<span class="chip cus">Custom</span>';
+    return `<tr><td style="text-align:left;padding-left:20px">${r.kind!=='custom'?`<span style="color:var(--g400);margin-right:6px" title="Built-in, cannot be edited">${I.lock}</span>`:''}${esc(r.name)}</td><td>${type}</td><td>${esc(r.desc)}</td><td>${n}</td><td><span class="dd"><span class="ib" data-a="menu" data-id="r_${r.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span></td></tr>`;
+  }).join('');
+  return `<div class="heading"><div class="t">Roles</div><div class="acts"><button class="btn" data-a="newRole">Add Role</button></div></div><div class="pad"><div class="tw"><table class="t"><thead><tr><th style="text-align:left;padding-left:20px">Role Name</th><th>Type</th><th>Description</th><th>Users Assigned</th><th style="width:80px"></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+/* ======================= STUB PAGES ======================= */
+function pageEdge(){return `<div class="heading"><div class="t">FrinksEdge Download</div></div><div class="stub"><h3>FrinksEdge v3.9.12</h3><p style="color:var(--g500);margin:0 0 16px">Installer for Ubuntu 22.04 · 1.8 GB</p><button class="btn" data-a="stub" data-m="FrinksEdge download started">${I.dl} Download</button></div>`;}
+function pageManual(){return `<div class="heading"><div class="t">Manual Assistant</div></div><div class="stub"><h3>Ask the Frinks manuals</h3><p style="color:var(--g500);margin:0 0 12px">Available to everyone in the organization.</p><input class="in" placeholder="How do I train an AI model?"></div>`;}
+
+/* ======================= DRAWERS ======================= */
+function userPicker(d){
+  const u=me();
+  const pool=D.users.filter(x=>x.status!=='Inactive'&&!isAdmin(x));
+  const f=d.uf||{plant:'',div:'',q:''};
+  let list=pool;
+  if(f.plant)list=list.filter(x=>x.plant===f.plant);
+  if(f.div)list=list.filter(x=>x.div===f.div);
+  if(f.q)list=list.filter(x=>x.name.toLowerCase().includes(f.q.toLowerCase()));
+  const divOpts=D.divs.filter(x=>!f.plant||x.plant===f.plant);
+  const rows=list.map(x=>{const locked=x.id===d.creator;const on=d.members.includes(x.id);return `<div class="urow ${locked?'lock':''}" ${locked?'':`data-a="pickUser" data-id="${x.id}"`}>${cb(on,'',locked?'dis':'')}<div><div class="nm">${esc(x.name)}${locked?' <span class="chip gray">Creator</span>':''}</div><div class="pl">${esc(placement(x))}</div></div><div class="rs">${x.roles.map(roleChip).join('')}</div></div>`;}).join('');
+  return `<div class="sec"><h4>Project Access</h4><div class="sub">${d.members.length} user${d.members.length===1?'':'s'} selected · Org, plant and division admins always have access</div>
+    <div class="filters"><select class="sel" data-a="pf" data-f="plant"><option value="">All plants</option>${D.plants.map(p=>`<option value="${p.id}" ${f.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select><select class="sel" data-a="pf" data-f="div"><option value="">All divisions</option>${divOpts.map(p=>`<option value="${p.id}" ${f.div===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select><input class="in" placeholder="Search users" data-pq value="${esc(f.q)}"></div>
+    <div class="ulist" data-scroll="ul">${rows||'<div class="empty" style="font-size:14px">No users match</div>'}</div></div>`;
+}
+function drawerProject(d){
+  const body=`<div class="form">
+    <div><label class="lb">Project Name</label><input class="in" data-f="name" value="${esc(d.name)}" placeholder="Enter project name">${d.err&&!d.name.trim()?'<div class="err">Project name is required</div>':''}</div>
+    <div><label class="lb">Project Description</label><input class="in" data-f="desc" value="${esc(d.desc)}" placeholder="Enter project description"></div>
+    ${d.mode==='add'?`<div><label class="lb">Inspection speed (products/minute)</label><input class="in" type="number" value="30"></div>
+    <div><label class="lb">Product Flow:</label><select class="sel"><option>Moving product</option><option>Fixed product</option></select></div>
+    <div><div style="display:flex;justify-content:space-between"><label class="lb">Cameras</label></div><div class="chips"><span class="chip">Camera 1</span><input placeholder="Type camera name and press Enter"></div></div>
+    <div><div style="display:flex;justify-content:space-between"><label class="lb">Add Variants</label></div><div class="chips"><span class="chip">Variant 1</span><input placeholder="Type variant name and press Enter"></div></div>`:''}
+    ${userPicker(d)}
+  </div>`;
+  return drawerShell(d.mode==='add'?'Create a New Project':d.mode==='edit'?'Edit Project':'Manage Access · '+esc(d.name),'md',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveProject">${d.mode==='add'?'Create Project':'Save'}</button>`);
+}
+function placementFields(d,lockToMine){
+  const u=me();const sc=scope(u);
+  const lvl=d.roles.map(r=>(R(r)||{}).level).filter(Boolean).sort((a,b)=>({org:3,plant:2,div:1}[b]-{org:3,plant:2,div:1}[a]))[0]||null;
+  const plants=sc.plant?D.plants.filter(p=>p.id===sc.plant):D.plants;
+  const divs=D.divs.filter(x=>x.plant===d.plant&&(!sc.div||x.id===sc.div));
+  const subs=D.subs.filter(x=>x.div===d.div);
+  const needP=lvl!=='org',needD=!lvl||lvl==='div',needS=!lvl;
+  const e=d.err;
+  return `<div class="row3">
+    <div><label class="lb">Plant${needP?' <span class="rq">*</span>':''}</label><select class="sel" data-a="dsel" data-f="plant" ${!needP||plants.length===1&&sc.plant?'disabled':''}>${!needP?'<option>All plants</option>':`<option value="">Select</option>${plants.map(p=>`<option value="${p.id}" ${d.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}`}</select>${e&&needP&&!d.plant?'<div class="err">Required</div>':''}</div>
+    <div><label class="lb">Division${needD?' <span class="rq">*</span>':''}</label><select class="sel" data-a="dsel" data-f="div" ${!needD||!d.plant||sc.div?'disabled':''}>${!needD?'<option>All divisions</option>':`<option value="">Select</option>${divs.map(p=>`<option value="${p.id}" ${d.div===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}`}</select>${e&&needD&&!d.div?'<div class="err">Required</div>':''}</div>
+    <div><label class="lb">Sub-division${needS?' <span class="rq">*</span>':''}</label><select class="sel" data-a="dsel" data-f="sub" ${!needS||!d.div?'disabled':''}>${!needS?'<option>All sub-divisions</option>':`<option value="">Select</option>${subs.map(p=>`<option value="${p.id}" ${d.sub===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}`}</select>${e&&needS&&!d.sub?'<div class="err">Required</div>':''}</div>
+  </div>`;
+}
+function drawerUser(d){
+  const u=me();
+  const grp=(title,list)=>`<div class="rgroup"><div class="gh">${title}</div>${list.map(r=>{const on=d.roles.includes(r.id);const selfAdmin=d.id===u.id&&r.kind==='admin'&&on;const dis=!assignable(r)||selfAdmin;return `<div class="ropt ${on?'on':''} ${dis?'dis':''}" ${dis?`title="${selfAdmin?'You cannot remove your own admin role':'Above your admin level'}"`:`data-a="pickRole" data-id="${r.id}"`}>${cb(on,'',dis?'dis':'')}<div><div class="rn">${esc(r.name)}</div><div class="rd">${esc(r.desc)}</div></div></div>`;}).join('')}</div>`;
+  const body=`<div class="form">
+    <div><label class="lb">User Name</label><input class="in" data-f="name" value="${esc(d.name)}" placeholder="Enter name">${d.err&&!d.name.trim()?'<div class="err">Name is required</div>':''}</div>
+    <div><label class="lb">User Email Id</label><input class="in" data-f="email" value="${esc(d.email)}" placeholder="Enter email" ${d.id?'disabled':''}>${d.err&&!d.email.trim()?'<div class="err">Email is required</div>':''}</div>
+    <div><label class="lb">Phone number</label><input class="in" data-f="phone" value="${esc(d.phone)}" placeholder="Enter contact number"></div>
+    ${placementFields(d)}
+    <div><label class="lb">Roles <span class="rq">*</span></label>${d.err&&!d.roles.length?'<div class="err">Choose at least 1 role</div>':''}
+      ${grp('Admin roles',D.roles.filter(r=>r.kind==='admin'))}
+      ${grp('Roles',D.roles.filter(r=>r.kind==='builtin'))}
+      ${D.roles.some(r=>r.kind==='custom')?grp('Custom roles',D.roles.filter(r=>r.kind==='custom')):''}
+    </div></div>`;
+  return drawerShell(d.id?'Edit user':'Add a new user','xs',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveUser">${d.id?'Finish':'Send Invite'}</button>`);
+}
+function drawerInst(d){
+  const u=me();const sc=scope(u);const adm=isAdmin(u);
+  const plants=sc.plant?D.plants.filter(p=>p.id===sc.plant):D.plants;
+  const divs=D.divs.filter(x=>x.plant===d.plant&&(!sc.div||x.id===sc.div));
+  const subs=D.subs.filter(x=>x.div===d.div&&(!sc.sub||x.id===sc.sub));
+  const body=`<div class="form">
+    <div><label class="lb">Instance Name</label><input class="in" data-f="name" value="${esc(d.name)}" placeholder="Enter instance name">${d.err&&!d.name.trim()?'<div class="err">Instance name is required</div>':''}</div>
+    <div class="row3">
+      <div><label class="lb">Plant <span class="rq">*</span></label><select class="sel" data-a="dsel" data-f="plant" ${sc.plant?'disabled':''}><option value="">Select</option>${plants.map(p=>`<option value="${p.id}" ${d.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>${d.err&&!d.plant?'<div class="err">Required</div>':''}</div>
+      <div><label class="lb">Division</label><select class="sel" data-a="dsel" data-f="div" ${sc.div||!d.plant?'disabled':''}><option value="">All divisions</option>${divs.map(p=>`<option value="${p.id}" ${d.div===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+      <div><label class="lb">Sub-division</label><select class="sel" data-a="dsel" data-f="sub" ${sc.sub||!d.div?'disabled':''}><option value="">All sub-divisions</option>${subs.map(p=>`<option value="${p.id}" ${d.sub===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+    </div>
+    <div style="font-size:13px;color:var(--g500)">Visible to people in this ${d.sub?'sub-division':d.div?'division':'plant'} and its admins.</div>
+  </div>`;
+  return drawerShell('Create Instance','xs',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveInst">Create</button>`);
+}
+function drawerShell(title,size,body,foot){return `<div class="bk" data-a="close"></div><div class="dr ${size}"><div class="dh">${title}<span class="x" data-a="close">✕</span></div><div class="db" data-scroll="db">${body}</div><div class="df">${foot}</div></div>`;}
+
+/* role drawer (CreateRoleDrawer look) */
+function roleDrawer(d){
+  const steps=['Basic Information','Permissions'];
+  const st=steps.map((t,i)=>{const c=i===d.step?'cur':i<d.step?'done':'todo';return `<div class="s"><div class="c"><div class="d ${c}">${c==='done'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>':''}</div>${i<steps.length-1?`<div class="ln ${i<d.step?'done':''}"></div>`:''}</div><div class="lb2 ${i===d.step?'cur':''}" data-a="rstep" data-s="${i}">${t}</div></div>`;}).join('');
+  const ro=d.mode==='view';
+  let ct;
+  if(d.step===0){
+    const dup=d.name.trim()&&D.roles.some(r=>r.name.toLowerCase()===d.name.trim().toLowerCase()&&r.id!==d.id);
+    ct=`<div class="basic"><div class="hh">Basic Information</div><div class="pp">Provide a name for the role and a short description for it.</div>
+      <div class="fld"><div class="lb">Role Name<span class="rq">*</span></div><input class="in" data-f="name" value="${esc(d.name)}" placeholder="Enter role name" ${ro?'disabled':''}>${dup?`<div class="err" style="font-size:14px">A role named ${esc(d.name.trim())} already exists.</div>`:''}</div>
+      <div class="fld"><div class="lb">Role Description<span class="rq">*</span></div><input class="in" data-f="desc" value="${esc(d.desc)}" placeholder="Enter role description" ${ro?'disabled':''}></div></div>`;
+  } else if(d.admin){
+    const r=R(d.id);const where={org:'the whole organization',plant:'their own plant',div:'their own division'}[r.level];
+    ct=`<div class="scope"><h3>${esc(r.name)}</h3><ul>
+      <li>Sees <b>every project</b> and has <b>all permissions</b> inside each one</li>
+      <li>Sees instances in ${where}</li>
+      <li>Adds and edits users in ${where}</li>
+      <li>Assigns any role at or below their own admin level</li>
+      <li>Creates custom roles</li>
+      <li>${r.level==='org'?'Creates plants, divisions and sub-divisions':r.level==='plant'?'Creates divisions and sub-divisions in their plant':'Creates sub-divisions in their division'}</li>
+    </ul></div>${permGrid(mkPerms(Object.fromEntries(AREAS.map(a=>[a.id,a.cols])),ALL_SPECIALS.map(s=>s.id)),true)}`;
+  } else {
+    ct=permGrid(d.perms,ro);
+  }
+  const dirty=JSON.stringify([d.name.trim(),d.desc.trim(),d.perms])!==d.base;
+  const okBasic=d.name.trim()&&d.desc.trim()&&!D.roles.some(r=>r.name.toLowerCase()===d.name.trim().toLowerCase()&&r.id!==d.id);
+  let foot;
+  if(ro) foot=`<div class="l">${d.step===0?`<button class="btn" data-a="rnext">Next</button>`:`<button class="btn bd" data-a="rback">Back</button>`}</div><button class="btn bd" data-a="close">Close</button>`;
+  else foot=`<div class="l">${d.step===0?`<button class="btn" data-a="rnext" ${okBasic?'':'disabled'}>Next</button>`:`<button class="btn bd" data-a="rback">Back</button>`}${d.step===1||d.mode==='edit'?`<button class="btn" data-a="saveRole" ${dirty&&okBasic?'':'disabled'}>Save</button><span style="font-size:13px;color:var(--g500)">${dirty?'Unsaved changes':'No changes yet'}</span>`:''}</div><button class="btn bd" data-a="close">Cancel</button>`;
+  const title=d.mode==='add'?'Add New Role':d.mode==='edit'?'Edit Role':'View Role';
+  return `<div class="rov"><div class="rdr"><div class="h">${title}<span style="cursor:pointer" data-a="close">X</span></div><div class="b"><div class="stp"><div class="vs">${st}</div></div><div class="ct" data-scroll="rc">${ct}</div></div><div class="f">${foot}</div></div></div>`;
+}
+function permGrid(p,ro){
+  const rows=AREAS.map(a=>{
+    const cells=COLS.map(([c])=>{
+      if(c==='view')return `<div class="c">${cb(true,'title="View is included for everyone added to a project"','dis')}</div>`;
+      if(!a.cols.includes(c))return `<div class="c"></div>`;
+      return `<div class="c">${cb(p.areas[a.id][c],ro?'':`data-a="pc" data-ar="${a.id}" data-c="${c}"`,ro?'dis':'')}</div>`;
+    }).join('');
+    let h=`<div class="prow"><div class="r"><b>${a.row}</b><small>${a.note}</small></div>${cells}</div>`;
+    a.specials.forEach(s=>{h+=`<div class="prow sp"><div class="r"><span class="swl"><span class="sw ${p.specials[s.id]?'on':''} ${ro?'dis':''}" ${ro?'':`data-a="ps" data-id="${s.id}"`}></span>${s.name}</span></div>${COLS.map(()=>'<div class="c"></div>').join('')}</div>`;});
+    return h;
+  }).join('');
+  return `<div class="perm"><h2>Permissions</h2><p class="ds">${ro?'Permissions included in this role':'Set the permissions for this role by choosing from the options below'}</p><div class="gh2"><div class="r">Resource</div>${COLS.map(([,l])=>`<div class="c">${l}</div>`).join('')}</div>${rows}</div>`;
+}
+
+/* ======================= MODAL ======================= */
+function modal(m){
+  return `<div class="mbk"><div class="mdl"><div class="mh">${m.title}<span style="cursor:pointer" data-a="mclose">✕</span></div><div class="mb">${m.body}</div><div class="mf">${m.ok?`<button class="btn bd" data-a="mclose">Cancel</button><button class="btn" data-a="mok">${m.ok}</button>`:`<button class="btn" data-a="mclose">OK</button>`}</div></div></div>`;
+}
+
+/* ======================= RENDER ======================= */
+function render(){
+  const keep={};document.querySelectorAll('[data-scroll]').forEach(e=>keep[e.dataset.scroll]=e.scrollTop);
+  if(!allowedPage(S.page)){S.page='projects';}
+  let h='';
+  if(S.page==='project'){h+=rail()+`<main class="main proj">${pageProject()}</main>`;}
+  else{
+    h+=sidebar()+`<main class="main">`;
+    h+={projects:pageProjects,org:pageOrg,users:pageUsers,roles:pageRoles,edge:pageEdge,manual:pageManual}[S.page]();
+    h+=`</main>`;
+  }
+  const d=S.drawer;
+  if(d){h+=d.type==='project'?drawerProject(d):d.type==='user'?drawerUser(d):d.type==='inst'?drawerInst(d):d.type==='role'?roleDrawer(d):'';}
+  if(S.modal)h+=modal(S.modal);
+  if(S.toast)h+=`<div class="toast"><i class="${S.toast.ok?'ok':'no'}">${S.toast.ok?'✓':'!'}</i><span>${S.toast.msg}</span></div>`;
+  $('app').innerHTML=h;
+  document.querySelectorAll('[data-scroll]').forEach(e=>{if(keep[e.dataset.scroll])e.scrollTop=keep[e.dataset.scroll];});
+}
+
+/* ======================= ACTIONS ======================= */
+const A={
+  go:e=>{S.page=e.dataset.pg;S.menu=null;S.whoOpen=false;},
+  who:()=>{S.whoOpen=!S.whoOpen;},
+  as:e=>{S.me=e.dataset.id;S.whoOpen=false;S.menu=null;S.drawer=null;const u=me();if(S.page==='project'&&!projVisible(P(S.pid)))S.page='projects';if(!allowedPage(S.page))S.page='projects';toast('Now viewing as '+esc(u.name));},
+  menu:e=>{S.menu=S.menu===e.dataset.id?null:e.dataset.id;},
+  open:e=>{S.pid=e.dataset.id;S.page='project';S.ptab='recipe';},
+  ptab:e=>{S.ptab=e.dataset.t;},
+  stub:e=>{toast(e.dataset.m);},
+  lic:()=>{toast('Download Demo License opened');},
+  tog:e=>{S.closed[e.dataset.id]=!S.closed[e.dataset.id];},
+  close:()=>{S.drawer=null;},
+  mclose:()=>{S.modal=null;},
+  mok:()=>{const f=S.modal.fn;S.modal=null;f&&f();},
+
+  newProject:()=>{S.drawer={type:'project',mode:'add',name:'',desc:'',creator:S.me,members:isAdmin(me())?[]:[S.me],uf:{plant:'',div:'',q:''}};},
+  editProject:e=>{const p=P(e.dataset.id);S.drawer={type:'project',mode:'edit',pid:p.id,name:p.name,desc:p.desc,creator:p.createdBy,members:[...p.members],uf:{plant:'',div:'',q:''}};},
+  access:e=>{const p=P(e.dataset.id);S.menu=null;S.drawer={type:'project',mode:'access',pid:p.id,name:p.name,desc:p.desc,creator:p.createdBy,members:[...p.members],uf:{plant:'',div:'',q:''}};},
+  pickUser:e=>{const d=S.drawer,id=e.dataset.id;d.members=d.members.includes(id)?d.members.filter(x=>x!==id):[...d.members,id];},
+  saveProject:()=>{const d=S.drawer;if(!d.name.trim()){d.err=true;return;}
+    if(d.mode==='add'){D.projects.unshift({id:nid('pr'),name:d.name.trim(),desc:d.desc.trim(),createdBy:S.me,createdAt:'Oct 16, 2026',members:d.members,variants:[{name:'Variant 1',caps:[['Camera 1','Capture 1',0]]}],datasets:[],models:[],instances:[]});toast('Project created');}
+    else{const p=P(d.pid);p.name=d.name.trim();p.desc=d.desc.trim();p.members=d.members;toast(d.mode==='access'?'Project access updated':'Project updated');}
+    S.drawer=null;},
+  delProject:e=>{const p=P(e.dataset.id);S.menu=null;S.modal={title:'Confirmation Message',body:`Are you sure you want to delete the project <b>${esc(p.name)}</b>?`,ok:'Delete',fn:()=>{D.projects=D.projects.filter(x=>x.id!==p.id);toast('Project deleted');}};},
+
+  newInst:()=>{const sc=scope(me());S.drawer={type:'inst',name:'',plant:sc.plant||'',div:sc.div||'',sub:sc.sub||''};},
+  saveInst:()=>{const d=S.drawer;if(!d.name.trim()||!d.plant){d.err=true;return;}P(S.pid).instances.push({id:nid('i'),name:d.name.trim(),plant:d.plant,div:d.div||null,sub:d.sub||null,date:'Oct 16, 2026',valid:'Apr 16, 2027',iid:Math.random().toString(16).slice(2,8)});S.drawer=null;toast('Instance created');},
+  delInst:e=>{const p=P(S.pid);const i=p.instances.find(x=>x.id===e.dataset.id);S.modal={title:'Confirmation Message',body:`Are you sure you want to delete the instance <b>${esc(i.name)}</b>?`,ok:'Delete',fn:()=>{p.instances=p.instances.filter(x=>x.id!==i.id);toast('Instance deleted');}};},
+
+  newUser:()=>{const sc=scope(me());S.drawer={type:'user',id:null,name:'',email:'',phone:'',plant:sc.plant||'',div:sc.div||'',sub:'',roles:[]};},
+  editUser:e=>{const t=U(e.dataset.id);S.menu=null;S.drawer={type:'user',id:t.id,name:t.name,email:t.email,phone:t.phone,plant:t.plant||'',div:t.div||'',sub:t.sub||'',roles:[...t.roles]};},
+  pickRole:e=>{const d=S.drawer,id=e.dataset.id;d.roles=d.roles.includes(id)?d.roles.filter(x=>x!==id):[...d.roles,id];},
+  saveUser:()=>{const d=S.drawer;
+    const lvl=d.roles.map(r=>(R(r)||{}).level).filter(Boolean).sort((a,b)=>({org:3,plant:2,div:1}[b]-{org:3,plant:2,div:1}[a]))[0]||null;
+    const needP=lvl!=='org',needD=!lvl||lvl==='div',needS=!lvl;
+    if(!d.name.trim()||!d.email.trim()||!d.roles.length||(needP&&!d.plant)||(needD&&!d.div)||(needS&&!d.sub)){d.err=true;return;}
+    const rec={name:d.name.trim(),email:d.email.trim(),phone:d.phone,plant:needP?d.plant:null,div:needD||lvl==='div'?d.div||null:null,sub:needS?d.sub:null,roles:d.roles};
+    if(lvl==='plant'){rec.div=null;rec.sub=null;} if(lvl==='div'){rec.div=d.div;rec.sub=null;}
+    if(d.id){Object.assign(U(d.id),rec);toast('User successfully updated!');}else{D.users.push({id:nid('u'),...rec,status:'Invited'});toast('Invitation sent to ['+esc(rec.email)+']');}
+    S.drawer=null;},
+  deactUser:e=>{const t=U(e.dataset.id);S.menu=null;
+    if(adminLevel(t)==='org'&&D.users.filter(x=>adminLevel(x)==='org'&&x.status==='Active').length<=1){S.modal={title:'Cannot deactivate',body:`${esc(t.name)} is the only active Org Admin. Make someone else an Org Admin first.`};return;}
+    S.modal={title:'Confirmation Message',body:`Are you sure you want to deactivate [${esc(t.name)}]?`,ok:'Deactivate',fn:()=>{t.status='Inactive';toast('User deactivated');}};},
+  actUser:e=>{U(e.dataset.id).status='Active';S.menu=null;toast('User activated');},
+
+  newRole:()=>{const p=viewOnlyPerms();S.drawer={type:'role',mode:'add',step:0,id:null,name:'',desc:'',perms:p,base:JSON.stringify(['','',p])};},
+  viewRole:e=>{const r=R(e.dataset.id);S.menu=null;S.drawer={type:'role',mode:'view',step:1,id:r.id,admin:r.kind==='admin',name:r.name,desc:r.desc,perms:rolePerms(r),base:''};},
+  editRole:e=>{const r=R(e.dataset.id);S.menu=null;const p=JSON.parse(JSON.stringify(r.perms));S.drawer={type:'role',mode:'edit',step:0,id:r.id,name:r.name,desc:r.desc,perms:p,base:JSON.stringify([r.name,r.desc,p])};},
+  rstep:e=>{const d=S.drawer;const s=+e.dataset.s;if(s===1&&d.mode!=='view'&&!(d.name.trim()&&d.desc.trim()))return;d.step=s;},
+  rnext:()=>{S.drawer.step=1;}, rback:()=>{S.drawer.step=0;},
+  pc:e=>{const d=S.drawer;const a=e.dataset.ar,c=e.dataset.c;d.perms.areas[a][c]=!d.perms.areas[a][c];},
+  ps:e=>{const d=S.drawer;d.perms.specials[e.dataset.id]=!d.perms.specials[e.dataset.id];},
+  saveRole:()=>{const d=S.drawer;const rec={name:d.name.trim(),desc:d.desc.trim(),perms:d.perms};
+    if(d.mode==='edit'){Object.assign(R(d.id),rec);toast('Role saved');}else{D.roles.push({id:nid('c_'),kind:'custom',...rec});toast('Role created');}S.drawer=null;},
+  delRole:e=>{const r=R(e.dataset.id);S.menu=null;const us=usersWithRole(r.id);
+    if(us.length){S.modal={title:'Role is in use',body:`<b>${esc(r.name)}</b> is assigned to ${us.length} user${us.length>1?'s':''} (${us.map(u=>esc(u.name)+(u.status==='Inactive'?' – inactive':'')).join(', ')}). Remove it from them before deleting.`};return;}
+    S.modal={title:'Confirmation Message',body:`Are you sure you want to delete the role <b>${esc(r.name)}</b>? This cannot be undone.`,ok:'Delete',fn:()=>{D.roles=D.roles.filter(x=>x.id!==r.id);toast('Role deleted');}};},
+
+  addUnit:e=>{const k=e.dataset.k,parent=e.dataset.parent;const lbl={plant:'Plant',div:'Division',sub:'Sub-division'}[k];
+    const pn=k==='div'?' in '+esc(plantN(parent)):k==='sub'?' in '+esc(divN(parent)):'';
+    S.modal={title:`Add ${lbl}${pn}`,body:`<label class="lb">${lbl} Name</label><input class="in" id="unitName" placeholder="Enter ${lbl.toLowerCase()} name">`,ok:'Add',fn:()=>{}};S.modal.fn=null;S.modal.unit={k,parent};},
+  renUnit:e=>{const k=e.dataset.k,id=e.dataset.id;const arr={plant:D.plants,div:D.divs,sub:D.subs}[k];const o=arr.find(x=>x.id===id);const lbl={plant:'Plant',div:'Division',sub:'Sub-division'}[k];
+    S.modal={title:`Rename ${lbl}`,body:`<label class="lb">${lbl} Name</label><input class="in" id="unitName" value="${esc(o.name)}">`,ok:'Save',unit:{k,id,rename:true}};},
+  delUnit:e=>{const k=e.dataset.k,id=e.dataset.id;const arr={plant:D.plants,div:D.divs,sub:D.subs}[k];const o=arr.find(x=>x.id===id);
+    const kids=k==='plant'?D.divs.filter(x=>x.plant===id).length:k==='div'?D.subs.filter(x=>x.div===id).length:0;const us=countUsers(k,id),ins=countInst(k,id);
+    if(kids||us||ins){S.modal={title:'Cannot delete',body:`<b>${esc(o.name)}</b> still has ${[kids?kids+(k==='plant'?' division(s)':' sub-division(s)'):'',us?us+' user(s)':'',ins?ins+' instance(s)':''].filter(Boolean).join(', ')}. Move or remove them first.`};return;}
+    S.modal={title:'Confirmation Message',body:`Are you sure you want to delete <b>${esc(o.name)}</b>?`,ok:'Delete',fn:()=>{const i=arr.indexOf(o);arr.splice(i,1);toast('Deleted');}};},
+};
+function unitSave(){const m=S.modal;const v=($('unitName')||{}).value||'';if(!v.trim())return toast('Enter a name',false);
+  const u=m.unit;
+  if(u.rename){const arr={plant:D.plants,div:D.divs,sub:D.subs}[u.k];arr.find(x=>x.id===u.id).name=v.trim();toast('Renamed');}
+  else if(u.k==='plant'){D.plants.push({id:nid('p'),name:v.trim()});toast('Plant added');}
+  else if(u.k==='div'){D.divs.push({id:nid('d'),name:v.trim(),plant:u.parent});S.closed['pl_'+u.parent]=false;toast('Division added');}
+  else {D.subs.push({id:nid('s'),name:v.trim(),div:u.parent});S.closed['dv_'+u.parent]=false;toast('Sub-division added');}
+  S.modal=null;render();}
+
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-a]');
+  if(!t){if(S.menu||S.whoOpen){S.menu=null;S.whoOpen=false;render();}return;}
+  const a=t.dataset.a;
+  if(t.tagName==='SELECT')return;
+  if(a==='mok'&&S.modal&&S.modal.unit){unitSave();return;}
+  if(!A[a])return;
+  if(a!=='menu'&&a!=='who')S.menu=null;
+  A[a](t);render();
+});
+document.addEventListener('change',ev=>{
+  const t=ev.target;const d=S.drawer;
+  if(t.dataset.a==='dsel'&&d){const f=t.dataset.f;d[f]=t.value;if(f==='plant'){d.div='';d.sub='';}if(f==='div'){d.sub='';}render();}
+  else if(t.dataset.a==='pf'&&d){d.uf[t.dataset.f]=t.value;if(t.dataset.f==='plant')d.uf.div='';render();}
+  else if(t.dataset.a==='uf'){S.ufilter.plant=t.value;render();}
+});
+document.addEventListener('input',ev=>{
+  const t=ev.target;const d=S.drawer;
+  if(d&&t.dataset.f&&t.tagName==='INPUT'){d[t.dataset.f]=t.value;
+    if(d.type==='role'){const f=document.querySelector('.rdr .f');const tmp=document.createElement('div');tmp.innerHTML=roleDrawer(d);f.innerHTML=tmp.querySelector('.f').innerHTML;
+      const fld=t.parentElement,old=fld.querySelector('.err');if(old)old.remove();const dup=d.name.trim()&&D.roles.some(r=>r.name.toLowerCase()===d.name.trim().toLowerCase()&&r.id!==d.id);if(t.dataset.f==='name'&&dup){const x=document.createElement('div');x.className='err';x.style.fontSize='14px';x.textContent='A role named '+d.name.trim()+' already exists.';fld.appendChild(x);}}
+    return;}
+  if(d&&t.hasAttribute('data-pq')){d.uf.q=t.value;const pos=t.selectionStart;render();const n=document.querySelector('[data-pq]');n.focus();n.setSelectionRange(pos,pos);return;}
+  if(t.hasAttribute('data-uq')){S.ufilter.q=t.value;const pos=t.selectionStart;render();const n=document.querySelector('[data-uq]');n.focus();n.setSelectionRange(pos,pos);}
+});
+document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.id==='unitName'){unitSave();}if(ev.key==='Escape'){S.drawer=null;S.modal=null;S.menu=null;S.whoOpen=false;render();}});
+render();
+</script>
+</body>
+</html>
