@@ -4,13 +4,11 @@ title: Vision Access v2 PRD
 
 # PRD: Frinks Vision Access v2 (Org Structure, Roles and Project Access)
 
-| | |
-|---|---|
-| **Product** | Frinks Vision |
-| **Status** | Draft for review |
-| **Date** | 16 October 2026 |
-| **Prototype** | https://vbv-fr.github.io/vision-access-v2/ |
-| **Replaces** | The current Roles & Permissions model (FP-203 and its sub-tasks) and the Teams & Plants section |
+**Product:** Frinks Vision  
+**Status:** Draft for review  
+**Date:** 16 October 2026  
+**Prototype:** [vbv-fr.github.io/vision-access-v2](https://vbv-fr.github.io/vision-access-v2/)  
+**Replaces:** the current Roles & Permissions model (FP-203 and its sub-tasks) and the Teams & Plants section
 
 ---
 
@@ -394,7 +392,7 @@ The report is shared with the PM for review.
 
 ## 17. Appendix: prototype guide
 
-- **Link:** https://vbv-fr.github.io/vision-access-v2/
+- **Link:** [vbv-fr.github.io/vision-access-v2](https://vbv-fr.github.io/vision-access-v2/)
 - **Switch user:** use the name box at the bottom-left of the sidebar.
 
 | Person | Roles | Placement | Try this |
