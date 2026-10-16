@@ -300,14 +300,14 @@ const I={
 const AREAS=[
   {id:'project',name:'Project Management',row:'Project Details',note:'Create projects, name, classes, project access',cols:['create','edit','delete'],specials:[]},
   {id:'recipe',name:'Recipe Management',row:'Recipe',note:'Variants, cameras, captures, modules',cols:['create','edit','delete'],specials:[]},
-  {id:'datasets',name:'Datasets Management',row:'Datasets',note:'Upload, organise, download images',cols:['create','edit','delete','download'],specials:[{id:'pretrain',name:'Run pre-training analysis'}]},
+  {id:'datasets',name:'Datasets Management',row:'Datasets',note:'Upload, organise, download images',cols:['create','edit','delete','download'],specials:[]},
   {id:'annotation',name:'Annotation',row:'Annotations',note:'Create = start annotating existing images',cols:['create','edit','delete','download'],specials:[{id:'autoann',name:'Run auto-annotation'}]},
-  {id:'models',name:'AI Models',row:'AI Models',note:'Create = train · Edit = thresholds',cols:['create','edit','delete','download'],specials:[]},
-  {id:'instances',name:'Instance Management',row:'Instances',note:'Download = instance package',cols:['create','edit','delete','download'],specials:[{id:'edge',name:'FrinksEdge Download'}]},
-  {id:'license',name:'License Download',row:'Demo License',note:'Download demo licenses',cols:['download'],specials:[]},
+  {id:'models',name:'AI Models',row:'AI Models',note:'Create = train · Edit = thresholds',cols:['create','edit','delete'],specials:[]},
+  {id:'instances',name:'Instance Management',row:'Instances',note:'Download = instance package',cols:['create','edit','delete','download'],specials:[]},
 ];
 const COLS=[['create','Create'],['view','View'],['edit','Edit'],['delete','Delete'],['download','Download']];
 const ALL_SPECIALS=AREAS.flatMap(a=>a.specials);
+const EXTRAS=[{id:'edge',name:'FrinksEdge Download',short:'Edge'},{id:'lic',name:'Download Demo License',short:'License'},{id:'manual',name:'Manual Assistant',short:'Manual'}];
 
 let uid=100; const nid=p=>p+(++uid);
 const D={
@@ -319,18 +319,17 @@ const D={
     {id:'plant_admin',name:'Plant Admin',kind:'admin',level:'plant',desc:'Full access within their plant'},
     {id:'div_admin',name:'Division Admin',kind:'admin',level:'div',desc:'Full access within their division'},
     ...AREAS.map(a=>({id:'r_'+a.id,name:a.name,kind:'builtin',area:a.id,desc:a.note})),
-    {id:'c_line',name:'Line Engineer',kind:'custom',desc:'Recipe and dataset work on the line',perms:mkPerms({recipe:['create','edit'],datasets:['create','edit','download']},['pretrain'])},
   ],
   users:[
-    {id:'u1',name:'Ananya Rao',email:'ananya.rao@acme.example',phone:'9800000001',plant:null,div:null,sub:null,roles:['org_admin'],status:'Active'},
-    {id:'u2',name:'Rahul Mehta',email:'rahul.mehta@acme.example',phone:'9800000002',plant:'p1',div:null,sub:null,roles:['plant_admin'],status:'Active'},
-    {id:'u3',name:'Kavya Iyer',email:'kavya.iyer@acme.example',phone:'9800000003',plant:'p2',div:'d3',sub:null,roles:['div_admin'],status:'Active'},
-    {id:'u4',name:'Vikram Shah',email:'vikram.shah@acme.example',phone:'9800000004',plant:'p1',div:'d1',sub:'s1',roles:['r_project','r_recipe'],status:'Active'},
-    {id:'u5',name:'Priya Nair',email:'priya.nair@acme.example',phone:'9800000005',plant:'p1',div:'d1',sub:'s2',roles:['r_annotation','r_datasets'],status:'Active'},
-    {id:'u6',name:'Arjun Das',email:'arjun.das@acme.example',phone:'9800000006',plant:'p2',div:'d3',sub:'s4',roles:['r_instances','r_license'],status:'Active'},
-    {id:'u7',name:'Meera Joshi',email:'meera.joshi@acme.example',phone:'9800000007',plant:'p2',div:'d4',sub:'s6',roles:['r_models'],status:'Active'},
-    {id:'u8',name:'Sanjay Kulkarni',email:'sanjay.k@acme.example',phone:'9800000008',plant:'p1',div:'d2',sub:'s3',roles:['c_line'],status:'Active'},
-    {id:'u9',name:'Deepa Menon',email:'deepa.menon@acme.example',phone:'9800000009',plant:'p2',div:'d3',sub:'s5',roles:['r_annotation'],status:'Invited'},
+    {id:'u1',name:'Ananya Rao',email:'ananya.rao@acme.example',phone:'9800000001',plant:null,div:null,sub:null,roles:['org_admin'],x:{edge:true,lic:true,manual:true},status:'Active'},
+    {id:'u2',name:'Rahul Mehta',email:'rahul.mehta@acme.example',phone:'9800000002',plant:'p1',div:null,sub:null,roles:['plant_admin'],x:{edge:true,lic:true,manual:true},status:'Active'},
+    {id:'u3',name:'Kavya Iyer',email:'kavya.iyer@acme.example',phone:'9800000003',plant:'p2',div:'d3',sub:null,roles:['div_admin'],x:{edge:true,lic:true,manual:true},status:'Active'},
+    {id:'u4',name:'Vikram Shah',email:'vikram.shah@acme.example',phone:'9800000004',plant:'p1',div:'d1',sub:'s1',roles:['r_project','r_recipe'],x:{edge:false,lic:false,manual:true},status:'Active'},
+    {id:'u5',name:'Priya Nair',email:'priya.nair@acme.example',phone:'9800000005',plant:'p1',div:'d1',sub:'s2',roles:['r_annotation','r_datasets'],x:{edge:false,lic:false,manual:true},status:'Active'},
+    {id:'u6',name:'Arjun Das',email:'arjun.das@acme.example',phone:'9800000006',plant:'p2',div:'d3',sub:'s4',roles:['r_instances'],x:{edge:true,lic:true,manual:true},status:'Active'},
+    {id:'u7',name:'Meera Joshi',email:'meera.joshi@acme.example',phone:'9800000007',plant:'p2',div:'d4',sub:'s6',roles:['r_models'],x:{edge:false,lic:false,manual:true},status:'Active'},
+    {id:'u8',name:'Sanjay Kulkarni',email:'sanjay.k@acme.example',phone:'9800000008',plant:'p1',div:'d2',sub:'s3',roles:['r_recipe','r_datasets'],x:{edge:false,lic:false,manual:false},status:'Active'},
+    {id:'u9',name:'Deepa Menon',email:'deepa.menon@acme.example',phone:'9800000009',plant:'p2',div:'d3',sub:'s5',roles:['r_annotation'],x:{edge:false,lic:false,manual:true},status:'Invited'},
   ],
   projects:[
     {id:'pr1',name:'Door Panel Inspection',desc:'Dent and scratch check on front and rear door panels',createdBy:'u4',createdAt:'Sep 18, 2026',members:['u4','u5','u6','u8'],
@@ -342,7 +341,7 @@ const D={
       variants:[{name:'Chassis',caps:[['Camera 1','Seam Left',2],['Camera 2','Seam Right',2]]}],
       datasets:[['Chassis | Seam Left',540,500],['Chassis | Seam Right',510,470]],
       models:[['SEG_Seam_02-10','Segmentation','Oct 2, 2026','Trained','0.91']],
-      instances:[{id:'i4',name:'WS_Pune_BodyShop',plant:'p1',div:'d1',sub:null,date:'Sep 21, 2026',valid:'Mar 21, 2027',iid:'5c0e7a'},{id:'i5',name:'WS_Chennai',plant:'p2',div:null,sub:null,date:'Sep 25, 2026',valid:'Mar 25, 2027',iid:'91aa3f'}]},
+      instances:[{id:'i4',name:'WS_Pune_LineB',plant:'p1',div:'d1',sub:'s2',date:'Sep 21, 2026',valid:'Mar 21, 2027',iid:'5c0e7a'},{id:'i5',name:'WS_Chennai_L1',plant:'p2',div:'d3',sub:'s4',date:'Sep 25, 2026',valid:'Mar 25, 2027',iid:'91aa3f'}]},
     {id:'pr3',name:'Final Audit OCR',desc:'Label and VIN plate reading at final audit',createdBy:'u3',createdAt:'Oct 1, 2026',members:['u6','u7','u9'],
       variants:[{name:'Sedan',caps:[['Camera 1','Label',1]]}],
       datasets:[['Sedan | Label',300,150]],
@@ -380,6 +379,7 @@ function perms(u){
   u.roles.forEach(id=>{const r=R(id);if(!r)return;const p=rolePerms(r);AREAS.forEach(a=>a.cols.forEach(c=>{if(p.areas[a.id][c])out.areas[a.id][c]=true}));ALL_SPECIALS.forEach(s=>{if(p.specials[s.id])out.specials[s.id]=true})});
   return out;
 }
+const hasX=(k,u=me())=>isAdmin(u)||!!(u.x&&u.x[k]);
 const can=(area,col,u=me())=>!!perms(u).areas[area][col];
 const canS=(sid,u=me())=>!!perms(u).specials[sid];
 function scope(u){const l=adminLevel(u);if(l==='org')return {};if(l==='plant')return {plant:u.plant};if(l==='div')return {plant:u.plant,div:u.div};return {plant:u.plant,div:u.div,sub:u.sub};}
@@ -398,7 +398,7 @@ function roleChip(id){const r=R(id);if(!r)return '';return `<span class="chip ${
 function usersWithRole(id){return D.users.filter(u=>u.roles.includes(id));}
 function cb(on,attrs='',cls=''){return `<span class="cb ${on?'on':''} ${cls}" ${attrs}>${I.check}</span>`;}
 function toast(msg,ok=true){S.toast={msg,ok};clearTimeout(window.__t);window.__t=setTimeout(()=>{S.toast=null;render()},2600);}
-function allowedPage(pg){const u=me();if(pg==='org'||pg==='users'||pg==='roles')return isAdmin(u);if(pg==='edge')return isAdmin(u)||canS('edge');return true;}
+function allowedPage(pg){const u=me();if(pg==='org'||pg==='users'||pg==='roles')return isAdmin(u);if(pg==='edge')return hasX('edge',u);if(pg==='manual')return hasX('manual',u);return true;}
 
 /* ======================= SIDEBAR ======================= */
 function sidebar(){
@@ -408,8 +408,8 @@ function sidebar(){
   h+=mi('projects',I.folder,'Projects');
   if(adm) h+=mi('org',I.org,'Plants &amp; Divisions');
   if(adm) h+=`<li><div class="mi" style="cursor:default"><span class="ic">${I.users}</span><span class="t">Users &amp; Permissions</span></div><ul class="subm">${mi('users','','Users')}${mi('roles','','Roles')}</ul></li>`;
-  if(adm||canS('edge')) h+=mi('edge',I.edge,'FrinksEdge Download');
-  h+=mi('manual',I.chat,'Manual Assistant');
+  if(hasX('edge')) h+=mi('edge',I.edge,'FrinksEdge Download');
+  if(hasX('manual')) h+=mi('manual',I.chat,'Manual Assistant');
   h+=`</ul>${whoBox()}</aside>`;
   return h;
 }
@@ -425,7 +425,7 @@ function whoBox(){
 /* ======================= PROJECTS ======================= */
 function pageProjects(){
   const u=me();const vis=D.projects.filter(p=>projVisible(p));
-  const showLic=isAdmin(u)||can('license','download');
+  const showLic=hasX('lic');
   let h=`<div class="heading"><div class="t">Projects</div><div class="acts">${showLic?`<button class="btn md" data-a="lic">Download Demo License</button>`:''}</div></div><div class="pad"><div class="grid">`;
   if(canCreateProject()) h+=`<div class="create" data-a="newProject"><div class="pl">+</div><h3>Start a new project</h3><p>Click to create</p></div>`;
   vis.forEach(p=>{
@@ -465,10 +465,10 @@ function pageProject(){
       ${can('datasets','download')||can('annotation','download')?`<span class="ib" data-a="stub" data-m="Download started">${I.dl}</span>`:''}
       ${can('datasets','delete')?`<span class="ib red" data-a="stub" data-m="Dataset deleted">${I.trash}</span>`:''}
       ${!can('datasets','create')&&!can('annotation','edit')&&!can('annotation','create')?act(true,'stub','View','data-m="Dataset opened (read-only)"'):''}</div></td></tr>`).join('');
-    return `<div class="heading">${crumb(p,'Datasets &amp; Annotations')}</div><div class="bar"><div class="l"></div><div class="l">${canS('pretrain')?`<button class="btn bd" data-a="stub" data-m="Pre-training analysis started">Run Pre-training Analysis</button>`:''}${can('datasets','create')?`<button class="btn" data-a="stub" data-m="Create Dataset opened">${I.plus} Create Dataset</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Dataset</th><th>Images</th><th>Annotated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="empty">No datasets yet</td></tr>'}</tbody></table></div></div>`;
+    return `<div class="heading">${crumb(p,'Datasets &amp; Annotations')}</div><div class="bar"><div class="l"></div><div class="l">${can('datasets','create')?`<button class="btn" data-a="stub" data-m="Create Dataset opened">${I.plus} Create Dataset</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Dataset</th><th>Images</th><th>Annotated</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="4" class="empty">No datasets yet</td></tr>'}</tbody></table></div></div>`;
   }
   if(t==='models'){
-    const rows=p.models.map(m=>`<tr><td>${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3]}</td><td>${m[4]}</td><td><div class="ia">${act(true,'stub','Results','data-m="Training results opened"')}${act(can('models','edit'),'stub','Edit Thresholds','data-m="Threshold editor opened"')}${can('models','download')?`<span class="ib" data-a="stub" data-m="Model download started">${I.dl}</span>`:''}${can('models','delete')?`<span class="ib red" data-a="stub" data-m="Model deleted">${I.trash}</span>`:''}</div></td></tr>`).join('');
+    const rows=p.models.map(m=>`<tr><td>${esc(m[0])}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3]}</td><td>${m[4]}</td><td><div class="ia">${act(true,'stub','Results','data-m="Training results opened"')}${act(can('models','edit'),'stub','Edit Thresholds','data-m="Threshold editor opened"')}${can('models','delete')?`<span class="ib red" data-a="stub" data-m="Model deleted">${I.trash}</span>`:''}</div></td></tr>`).join('');
     return `<div class="heading">${crumb(p,'AI Models')}</div><div class="bar"><div class="l"></div><div class="l">${can('models','create')?`<button class="btn" data-a="stub" data-m="Train AI Model opened">${I.plus} Train AI Model</button>`:''}</div></div><div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>Model Name</th><th>Type</th><th>Date</th><th>Status</th><th>mAP</th><th>Actions</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">No models trained yet</td></tr>'}</tbody></table></div></div>`;
   }
   // instances
@@ -519,11 +519,11 @@ function pageUsers(){
     if(ed)items.push(`<li data-a="editUser" data-id="${t.id}">${I.pen} Edit</li>`);
     if(ed&&t.id!==u.id)items.push(t.status==='Inactive'?`<li data-a="actUser" data-id="${t.id}">Activate</li>`:`<li class="red" data-a="deactUser" data-id="${t.id}">${I.trash} Deactivate</li>`);
     if(t.status==='Invited'&&ed)items.push(`<li data-a="stub" data-m="Invite re-sent to ${esc(t.email)}">Resend Invite</li>`);
-    return `<tr class="${t.status==='Inactive'?'dim':''}"><td>${esc(t.name)}${t.id===u.id?' <span class="chip gray">You</span>':''}</td><td>${esc(t.email)}</td><td>${adminLevel(t)==='org'?'All':plantN(t.plant)}</td><td>${adminLevel(t)==='org'||adminLevel(t)==='plant'?'All':divN(t.div)}</td><td>${adminLevel(t)?'All':subN(t.sub)}</td><td style="max-width:260px">${t.roles.map(roleChip).join('')}</td><td><span class="st ${t.status}">${t.status}</span></td><td>${items.length?`<span class="dd"><span class="ib" data-a="menu" data-id="u_${t.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
+    return `<tr class="${t.status==='Inactive'?'dim':''}"><td>${esc(t.name)}${t.id===u.id?' <span class="chip gray">You</span>':''}</td><td>${esc(t.email)}</td><td>${adminLevel(t)==='org'?'All':plantN(t.plant)}</td><td>${adminLevel(t)==='org'||adminLevel(t)==='plant'?'All':divN(t.div)}</td><td>${adminLevel(t)?'All':subN(t.sub)}</td><td style="max-width:260px">${t.roles.map(roleChip).join('')}</td><td>${isAdmin(t)?'<span class="chip gray">All</span>':EXTRAS.filter(e=>t.x&&t.x[e.id]).map(e=>`<span class="chip gray">${e.short}</span>`).join('')||'<span style="color:var(--g400)">—</span>'}</td><td><span class="st ${t.status}">${t.status}</span></td><td>${items.length?`<span class="dd"><span class="ib" data-a="menu" data-id="u_${t.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
   }).join('');
   return `<div class="heading"><div class="t">Users</div><div class="acts"><button class="btn" data-a="newUser">Add User</button></div></div>
   <div class="bar" style="padding-top:8px"><div class="l"><select class="sel" style="width:200px" data-a="uf" data-f="plant"><option value="">All plants</option>${plantsInScope.map(p=>`<option value="${p.id}" ${f.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select><input class="in" style="width:260px" placeholder="Search name or email" data-uq value="${esc(f.q)}"></div></div>
-  <div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>User Name</th><th>Email</th><th>Plant</th><th>Division</th><th>Sub-division</th><th>Role(s)</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="empty">No users found</td></tr>'}</tbody></table></div></div>`;
+  <div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>User Name</th><th>Email</th><th>Plant</th><th>Division</th><th>Sub-division</th><th>Role(s)</th><th>Other Access</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${rows||'<tr><td colspan="9" class="empty">No users found</td></tr>'}</tbody></table></div></div>`;
 }
 
 /* ======================= ROLES ======================= */
@@ -540,7 +540,7 @@ function pageRoles(){
 
 /* ======================= STUB PAGES ======================= */
 function pageEdge(){return `<div class="heading"><div class="t">FrinksEdge Download</div></div><div class="stub"><h3>FrinksEdge v3.9.12</h3><p style="color:var(--g500);margin:0 0 16px">Installer for Ubuntu 22.04 · 1.8 GB</p><button class="btn" data-a="stub" data-m="FrinksEdge download started">${I.dl} Download</button></div>`;}
-function pageManual(){return `<div class="heading"><div class="t">Manual Assistant</div></div><div class="stub"><h3>Ask the Frinks manuals</h3><p style="color:var(--g500);margin:0 0 12px">Available to everyone in the organization.</p><input class="in" placeholder="How do I train an AI model?"></div>`;}
+function pageManual(){return `<div class="heading"><div class="t">Manual Assistant</div></div><div class="stub"><h3>Ask the Frinks manuals</h3><p style="color:var(--g500);margin:0 0 12px">Ask anything about setting up and running Frinks Vision.</p><input class="in" placeholder="How do I train an AI model?"></div>`;}
 
 /* ======================= DRAWERS ======================= */
 function userPicker(d){
@@ -595,7 +595,9 @@ function drawerUser(d){
       ${grp('Admin roles',D.roles.filter(r=>r.kind==='admin'))}
       ${grp('Roles',D.roles.filter(r=>r.kind==='builtin'))}
       ${D.roles.some(r=>r.kind==='custom')?grp('Custom roles',D.roles.filter(r=>r.kind==='custom')):''}
-    </div></div>`;
+    </div>
+    <div><label class="lb">Other Access</label>${(()=>{const adm=d.roles.some(r=>(R(r)||{}).kind==='admin');return EXTRAS.map(e=>{const on=adm||d.x[e.id];return `<div class="ropt ${adm?'dis':''}" style="cursor:${adm?'not-allowed':'pointer'}" ${adm?'title="Always on for admins"':`data-a="pickX" data-id="${e.id}"`}><span class="sw ${on?'on':''} ${adm?'dis':''}"></span><div class="rn">${e.name}</div>${adm?'<div class="rd" style="margin-left:auto">Always on for admins</div>':''}</div>`;}).join('');})()}</div>
+    </div>`;
   return drawerShell(d.id?'Edit user':'Add a new user','xs',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveUser">${d.id?'Finish':'Send Invite'}</button>`);
 }
 function drawerInst(d){
@@ -607,10 +609,10 @@ function drawerInst(d){
     <div><label class="lb">Instance Name</label><input class="in" data-f="name" value="${esc(d.name)}" placeholder="Enter instance name">${d.err&&!d.name.trim()?'<div class="err">Instance name is required</div>':''}</div>
     <div class="row3">
       <div><label class="lb">Plant <span class="rq">*</span></label><select class="sel" data-a="dsel" data-f="plant" ${sc.plant?'disabled':''}><option value="">Select</option>${plants.map(p=>`<option value="${p.id}" ${d.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>${d.err&&!d.plant?'<div class="err">Required</div>':''}</div>
-      <div><label class="lb">Division</label><select class="sel" data-a="dsel" data-f="div" ${sc.div||!d.plant?'disabled':''}><option value="">All divisions</option>${divs.map(p=>`<option value="${p.id}" ${d.div===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
-      <div><label class="lb">Sub-division</label><select class="sel" data-a="dsel" data-f="sub" ${sc.sub||!d.div?'disabled':''}><option value="">All sub-divisions</option>${subs.map(p=>`<option value="${p.id}" ${d.sub===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div>
+      <div><label class="lb">Division <span class="rq">*</span></label><select class="sel" data-a="dsel" data-f="div" ${sc.div||!d.plant?'disabled':''}><option value="">Select</option>${divs.map(p=>`<option value="${p.id}" ${d.div===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>${d.err&&!d.div?'<div class="err">Required</div>':''}</div>
+      <div><label class="lb">Sub-division <span class="rq">*</span></label><select class="sel" data-a="dsel" data-f="sub" ${sc.sub||!d.div?'disabled':''}><option value="">Select</option>${subs.map(p=>`<option value="${p.id}" ${d.sub===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>${d.err&&!d.sub?'<div class="err">Required</div>':''}</div>
     </div>
-    <div style="font-size:13px;color:var(--g500)">Visible to people in this ${d.sub?'sub-division':d.div?'division':'plant'} and its admins.</div>
+    <div style="font-size:13px;color:var(--g500)">Visible to people in this sub-division and its admins.</div>
   </div>`;
   return drawerShell('Create Instance','xs',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveInst">Create</button>`);
 }
@@ -635,6 +637,7 @@ function roleDrawer(d){
       <li>Adds and edits users in ${where}</li>
       <li>Assigns any role at or below their own admin level</li>
       <li>Creates custom roles</li>
+      <li>Always has FrinksEdge Download, Download Demo License and Manual Assistant</li>
       <li>${r.level==='org'?'Creates plants, divisions and sub-divisions':r.level==='plant'?'Creates divisions and sub-divisions in their plant':'Creates sub-divisions in their division'}</li>
     </ul></div>${permGrid(mkPerms(Object.fromEntries(AREAS.map(a=>[a.id,a.cols])),ALL_SPECIALS.map(s=>s.id)),true)}`;
   } else {
@@ -712,17 +715,18 @@ const A={
   delProject:e=>{const p=P(e.dataset.id);S.menu=null;S.modal={title:'Confirmation Message',body:`Are you sure you want to delete the project <b>${esc(p.name)}</b>?`,ok:'Delete',fn:()=>{D.projects=D.projects.filter(x=>x.id!==p.id);toast('Project deleted');}};},
 
   newInst:()=>{const sc=scope(me());S.drawer={type:'inst',name:'',plant:sc.plant||'',div:sc.div||'',sub:sc.sub||''};},
-  saveInst:()=>{const d=S.drawer;if(!d.name.trim()||!d.plant){d.err=true;return;}P(S.pid).instances.push({id:nid('i'),name:d.name.trim(),plant:d.plant,div:d.div||null,sub:d.sub||null,date:'Oct 16, 2026',valid:'Apr 16, 2027',iid:Math.random().toString(16).slice(2,8)});S.drawer=null;toast('Instance created');},
+  saveInst:()=>{const d=S.drawer;if(!d.name.trim()||!d.plant||!d.div||!d.sub){d.err=true;return;}P(S.pid).instances.push({id:nid('i'),name:d.name.trim(),plant:d.plant,div:d.div,sub:d.sub,date:'Oct 16, 2026',valid:'Apr 16, 2027',iid:Math.random().toString(16).slice(2,8)});S.drawer=null;toast('Instance created');},
   delInst:e=>{const p=P(S.pid);const i=p.instances.find(x=>x.id===e.dataset.id);S.modal={title:'Confirmation Message',body:`Are you sure you want to delete the instance <b>${esc(i.name)}</b>?`,ok:'Delete',fn:()=>{p.instances=p.instances.filter(x=>x.id!==i.id);toast('Instance deleted');}};},
 
-  newUser:()=>{const sc=scope(me());S.drawer={type:'user',id:null,name:'',email:'',phone:'',plant:sc.plant||'',div:sc.div||'',sub:'',roles:[]};},
-  editUser:e=>{const t=U(e.dataset.id);S.menu=null;S.drawer={type:'user',id:t.id,name:t.name,email:t.email,phone:t.phone,plant:t.plant||'',div:t.div||'',sub:t.sub||'',roles:[...t.roles]};},
+  newUser:()=>{const sc=scope(me());S.drawer={type:'user',id:null,name:'',email:'',phone:'',plant:sc.plant||'',div:sc.div||'',sub:'',roles:[],x:{edge:false,lic:false,manual:true}};},
+  editUser:e=>{const t=U(e.dataset.id);S.menu=null;S.drawer={type:'user',id:t.id,name:t.name,email:t.email,phone:t.phone,plant:t.plant||'',div:t.div||'',sub:t.sub||'',roles:[...t.roles],x:{...(t.x||{edge:false,lic:false,manual:true})}};},
+  pickX:e=>{const d=S.drawer;d.x[e.dataset.id]=!d.x[e.dataset.id];},
   pickRole:e=>{const d=S.drawer,id=e.dataset.id;d.roles=d.roles.includes(id)?d.roles.filter(x=>x!==id):[...d.roles,id];},
   saveUser:()=>{const d=S.drawer;
     const lvl=d.roles.map(r=>(R(r)||{}).level).filter(Boolean).sort((a,b)=>({org:3,plant:2,div:1}[b]-{org:3,plant:2,div:1}[a]))[0]||null;
     const needP=lvl!=='org',needD=!lvl||lvl==='div',needS=!lvl;
     if(!d.name.trim()||!d.email.trim()||!d.roles.length||(needP&&!d.plant)||(needD&&!d.div)||(needS&&!d.sub)){d.err=true;return;}
-    const rec={name:d.name.trim(),email:d.email.trim(),phone:d.phone,plant:needP?d.plant:null,div:needD||lvl==='div'?d.div||null:null,sub:needS?d.sub:null,roles:d.roles};
+    const rec={name:d.name.trim(),email:d.email.trim(),phone:d.phone,plant:needP?d.plant:null,div:needD||lvl==='div'?d.div||null:null,sub:needS?d.sub:null,roles:d.roles,x:{...d.x}};
     if(lvl==='plant'){rec.div=null;rec.sub=null;} if(lvl==='div'){rec.div=d.div;rec.sub=null;}
     if(d.id){Object.assign(U(d.id),rec);toast('User successfully updated!');}else{D.users.push({id:nid('u'),...rec,status:'Invited'});toast('Invitation sent to ['+esc(rec.email)+']');}
     S.drawer=null;},
