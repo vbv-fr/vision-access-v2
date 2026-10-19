@@ -14,16 +14,16 @@ title: Vision Access v2 PRD
 
 ## 1. Summary
 
-- Every user belongs to **one plant and one team** and holds **one or more roles**. Org Admins don't need a plant or team.
-- Roles are fixed and locked:
+- Every user belongs to **one plant and one team**. Org Admins don't need a plant or team.
+- **Everyone is a Viewer by default.** A user with no role can view every section of the projects they're added to.
+- Roles add more on top of that, and a user can hold several. All built-in roles are locked:
   - **1 admin role:** Org Admin;
-  - **2 user-management roles:** Manage Users – Organisation, Manage Users – Plant;
-  - **7 work roles,** including a view-only **Viewer**.
+  - **3 organisation roles:** Manage Users – Organisation, Manage Users – Plant, Manage Plants & Teams;
+  - **6 work roles:** Project Management, Recipe Management, Datasets Management, Annotation, AI Models, Instance Management.
 - Org Admins can add custom roles.
-- Three tools are switched on or off per user: **FrinksEdge Download, Download Demo License and Manual Assistant**.
+- Three tools are switched on or off per user with toggles: **FrinksEdge Download, Download Demo License and Manual Assistant**.
 - People see a project only when they've been **added to it**. Org Admins see every project.
 - Inside a project, people see only the **instances of their own plant and team**.
-- Everyone added to a project can view everything in it. Their roles decide what else they can do.
 - Actions a person can't use are shown **greyed out with a hover message** saying what's needed.
 
 ---
@@ -46,10 +46,10 @@ title: Vision Access v2 PRD
 
 **Goals**
 1. Use the existing Plants and Teams lists to decide which instances each person sees.
-2. Give every user a plant, a team and one or more roles.
-3. Provide ready-made, locked roles, including a view-only Viewer role.
+2. Give every user a plant and a team, view access by default, and roles for anything more.
+3. Provide ready-made, locked roles so most companies never need to build a role.
 4. Let project creators choose exactly who can access a project.
-5. Let trusted people manage users without making them admins.
+5. Let trusted people manage users, plants and teams without making them admins.
 6. Enforce every permission on the server, not just on screen.
 
 **Not in this version**
@@ -74,9 +74,10 @@ title: Vision Access v2 PRD
 | **Plant** | A factory site, e.g. *Pune*. |
 | **Team** | A group of people, e.g. *Line B*. Plants and teams are two separate lists; a team is not inside a plant. |
 | **Placement** | A user's plant and team. |
-| **Role** | A named set of permissions. A user can hold several. |
+| **Viewer** | The default role everyone has. View access to every section of the projects they're on. |
+| **Role** | A named set of permissions added on top of Viewer. A user can hold several. |
 | **User manager** | Someone holding Manage Users – Organisation or Manage Users – Plant. |
-| **Other access** | Three per-user switches: FrinksEdge Download, Download Demo License, Manual Assistant. |
+| **Other access** | Three per-user toggles: FrinksEdge Download, Download Demo License, Manual Assistant. |
 | **Project member** | A user who has been added to a project. |
 | **Project creator** | The person who created a project. Always a member and can't be removed. |
 | **Instance tag** | The plant and team an instance belongs to. |
@@ -88,7 +89,7 @@ title: Vision Access v2 PRD
 
 - The existing **Teams & Plants** section stays: one list of plants and one list of teams. They are not linked to each other.
 - The lists rarely change, so an Org Admin can add users or create projects in any order.
-- **Org Admins** add, rename and delete plants and teams. Everyone else can only view the lists.
+- **Org Admins and Manage Plants & Teams holders** add, rename and delete plants and teams. Everyone else can only view the lists.
 - A plant or team **can't be deleted** while users or instances still use it. The message names what is left, e.g. *"Line B is still used by 3 users and 1 instance. Move them first."*
 - Names must be unique within each list.
 
@@ -105,9 +106,11 @@ title: Vision Access v2 PRD
 | Phone | No | |
 | Plant | Yes, except Org Admins | One plant per user. |
 | Team | Yes, except Org Admins | One team per user. |
-| Roles | At least one | Several allowed. **Viewer** is pre-selected for new users. |
-| Other access | — | Three switches. See §6.4. |
+| Roles | No | Several allowed. Nothing is pre-selected. |
+| Other access | — | Three toggles. See §6.4. |
 | Status | — | Active or Inactive. New users show **Invited** until they set their password. |
+
+**Note at the bottom of the Roles box:** *"If you don't assign any role, this user will have View access to all sections of Vision, in the projects they're added to."*
 
 ### 6.2 Who can manage users
 
@@ -117,32 +120,33 @@ title: Vision Access v2 PRD
 | Add users | In any plant | In any plant | In own plant | No |
 | Edit users: name, phone, team, status | Anyone | Anyone except Org Admins | Users in own plant, except Org Admins | No |
 | Change a user's plant | Yes | Yes | No | No |
-| Add or remove roles | Any role | Only roles they hold, plus Manage Users – Plant and Viewer | Only roles they hold, plus Viewer | No |
-| Switch Other access on or off | All three | Only ones they have on | Only ones they have on | No |
+| Add or remove roles | Any role | Only roles they hold, plus Manage Users – Plant | Only roles they hold | No |
+| Turn Other access toggles on or off | All three | Only ones they have on | Only ones they have on | No |
 | Delete users | Anyone except the last Org Admin | Anyone except Org Admins | Users in own plant, except Org Admins | No |
 
 Rows in the Users list show a ⋮ menu only to people who can act on that user.
 
 ### 6.3 Rules for user managers
-- **Roles are the one limit.** User managers can edit everything about a user in their scope except roles they don't hold. They can add or remove only roles they hold themselves.
-  - Roles they can't give show greyed out, with the hover message *"You can only give roles you have yourself."*
-  - **Viewer** can always be given or removed, because it adds nothing.
-  - Manage Users – Organisation holders can also give or remove **Manage Users – Plant**, because a plant sits inside the organisation.
+- **Roles and toggles are the only limits.** User managers can edit everything about a user in their scope, but can add or remove only:
+  - roles they hold themselves;
+  - Other access toggles they have on themselves.
+- Roles and toggles they can't give show greyed out, with the hover message *"You can only give access you have yourself."*
+- Manage Users – Organisation holders can also give or remove **Manage Users – Plant**, because a plant sits inside the organisation.
 - They can't change or delete **Org Admins**.
 - Manage Users – Plant holders work only with users of their own plant, and can't move anyone to another plant.
-- They can switch on or off only the Other access switches they have on themselves.
 - These roles give nothing inside projects. Holders see a project only if they've been added to it.
 
-### 6.4 Other access (per-user switches)
+### 6.4 Other access (per-user toggles)
+These are three on/off toggles in the Add/Edit User drawer.
 
-| Switch | What it unlocks | Default for a new user |
+| Toggle | What it unlocks | Default for a new user |
 |---|---|---|
 | **FrinksEdge Download** | The FrinksEdge Download page | Off |
 | **Download Demo License** | The Download Demo License button on the Projects page | Off |
 | **Manual Assistant** | The Manual Assistant chatbot and manuals | On |
 
-- **Org Admins always have all three.** For them the switches show as on and locked: *"Always on for Org Admins"*.
-- The Users list shows each person's switches in an **Other Access** column.
+- **Org Admins always have all three.** For them the toggles show as on and locked: *"Always on for Org Admins"*.
+- The Users list shows each person's toggles in an **Other Access** column.
 
 ### 6.5 Status, delete and safety rules
 - **Active or Inactive:** Org Admins and user managers switch a user between the two from the user drawer or the ⋮ menu. Inactive users are logged out immediately and can't log in. Their project memberships are kept, so making them Active again restores their access.
@@ -151,9 +155,12 @@ Rows in the Users list show a ⋮ menu only to people who can act on that user.
   - projects they created show *"Name (deactivated)"* as the creator;
   - their email can be invited again later, as a new user.
 - **Invited users** can be sent the invite again. They can't be added to projects until they've set their password.
-- **No self-changes:** nobody can change their own plant, team, roles, switches or status, or delete themselves.
+- **No self-changes:** nobody can change their own plant, team, roles, toggles or status, or delete themselves.
 - **Last Org Admin:** the last active Org Admin can't be deactivated, deleted or lose Org Admin. The message reads *"Make someone else an Org Admin first."*
-- **Removing Org Admin** from someone needs at least one other role on that person. No warning is shown. Afterwards they see only projects they created, and are added to other projects as needed.
+- **Removing Org Admin** from someone:
+  - they keep any other roles they have, or become a Viewer if they have none;
+  - no warning is shown;
+  - they keep access to projects they created, and are added to other projects as needed.
 
 ---
 
@@ -161,7 +168,13 @@ Rows in the Users list show a ⋮ menu only to people who can act on that user.
 
 All built-in roles are **locked**: they can't be edited or deleted.
 
-### 7.1 Admin role: Org Admin
+### 7.1 Viewer (default for everyone)
+- Every user is a Viewer. They don't need to be given this role.
+- A Viewer can open **every section** of the projects they're added to and see everything in it. Every action is greyed out unless another role allows it.
+- Other roles add actions on top of Viewer. For example, someone with Recipe Management but not AI Models can open the AI Models page and see all models and results, but Train, Edit Thresholds and Delete are greyed out.
+- In the Users list, a user with no other role shows **Viewer** in the Role(s) column.
+
+### 7.2 Admin role: Org Admin
 - Sees **every project** and has **every permission** inside each one.
 - Sees **all instances**, including drafts.
 - The only person who can move an instance to another plant or team.
@@ -171,18 +184,18 @@ All built-in roles are **locked**: they can't be edited or deleted.
 - Always has FrinksEdge Download, Download Demo License and Manual Assistant.
 - Doesn't need a plant or team.
 
-### 7.2 User-management roles
+### 7.3 Organisation roles
 
 | Role | What it adds |
 |---|---|
-| **Manage Users – Organisation** | Add, edit and delete users in any plant. Roles are limited as in §6.3. |
+| **Manage Users – Organisation** | Add, edit and delete users in any plant. Roles and toggles are limited as in §6.3. |
 | **Manage Users – Plant** | The same, within their own plant. |
+| **Manage Plants & Teams** | Add, rename and delete plants and teams (§5). |
 
-### 7.3 Work roles
+### 7.4 Work roles
 
-| Role | What it adds on top of View |
+| Role | What it adds on top of Viewer |
 |---|---|
-| **Viewer** | Nothing. For people who only look. Pre-selected for new users. |
 | **Project Management** | Create projects (name, description, inspection speed, product flow, cameras, variants and classes), edit them and delete them. Manage project access. |
 | **Recipe Management** | Create, edit and delete recipes (captures), including their module configuration. |
 | **Datasets Management** | Create datasets and upload images, edit and delete them, and download images. |
@@ -190,16 +203,13 @@ All built-in roles are **locked**: they can't be edited or deleted.
 | **AI Models** | Train models, edit thresholds on the training results page, and delete models. |
 | **Instance Management** | Create, edit and delete instances, and download instance packages, within their own plant and team. |
 
-### 7.4 What every project member gets
-**View on everything** inside any project they're a member of. This is never switched off.
-
 ### 7.5 Several roles
 A user with several roles gets everything those roles allow combined. For example, *Annotation + Datasets Management* can upload images, annotate them and download the images.
 
 ### 7.6 Custom roles
 - Only **Org Admins** can create, edit and delete custom roles.
 - The editor keeps today's two steps, **Basic Information → Permissions**. The Finalize step is removed.
-- The Permissions step is one grid. A dash means the action doesn't exist for that area:
+- The Permissions step is one grid. View is always on, because everyone is a Viewer. A dash means the action doesn't exist for that area:
 
 | Area | Create | View | Edit | Delete | Download |
 |---|---|---|---|---|---|
@@ -211,13 +221,15 @@ A user with several roles gets everything those roles allow combined. For exampl
 | Instances | ✓ | Always on | ✓ | ✓ | ✓ (package) |
 
 - **Annotations:** Create, Edit and Delete always go together. Ticking any one ticks all three, and unticking one unticks all three. Create includes auto-annotation.
-- Custom roles cover project work only. Managing users stays with Org Admins and the two Manage Users roles.
+- Custom roles cover project work only. Managing users, plants and teams stays with Org Admins and the organisation roles.
 - **Save** stays greyed out until something changes.
 - A custom role can't be deleted while anyone holds it, active or inactive. The message names the holders. If nobody holds it, it is deleted after a confirmation popup.
 - Role names are unique, and names of deleted roles can be reused.
 
 ### 7.7 The Roles page
-- **Columns:** Role Name, Type (Admin / User management / Work / Custom), Description, Users Assigned. Built-in roles show a lock.
+- **Columns:** Role Name, Type (Default / Admin / Organisation / Work / Custom), Description, Users Assigned.
+  - Built-in roles show a lock.
+  - Viewer shows **Everyone** under Users Assigned.
 - **Everyone** can see the list.
 - **Org Admins** get a ⋮ menu:
   - **View** on every role;
@@ -237,7 +249,7 @@ A user with several roles gets everything those roles allow combined. For exampl
 - The Create Project drawer keeps its fields: name, description, inspection speed, product flow, cameras, variants and classes.
 - A new section at the end, **Project Access**, lists the users who can be added:
   - users from **any plant**, filtered by plant and team, and searchable;
-  - each user's plant, team and roles are shown;
+  - each user's plant, team and roles are shown, with "Viewer" for users with no other role;
   - Org Admins aren't listed, because they always have access;
   - invited and inactive users aren't listed.
 - The section header reads *"N users selected · Org Admins always have access."*
@@ -259,7 +271,7 @@ A user with several roles gets everything those roles allow combined. For exampl
 Only Org Admins and Project Management holders can delete a project. The creator has no special right to delete.
 
 ### 8.6 Inside a project
-Everyone on the project sees every section. Actions they can't use are **greyed out with a hover message**.
+Everyone on the project can open every section and see everything in it. Actions they can't use are **greyed out with a hover message**.
 
 | Section | Everyone on the project | Needs this role |
 |---|---|---|
@@ -271,7 +283,7 @@ Everyone on the project sees every section. Actions they can't use are **greyed 
 
 **Example hover messages:**
 - *"You need Recipe Management to add recipes."*
-- *"You need Datasets Management to download images."*
+- *"You need AI Models to edit thresholds."*
 - *"The project creator can't be removed."*
 
 ### 8.7 Product changes that come with this
@@ -351,11 +363,11 @@ When Frinks staff move a project to another company:
 | Menu item | Who can use it |
 |---|---|
 | Projects | Everyone |
-| Teams & Plants | Everyone can view; only Org Admins can change |
+| Teams & Plants | Everyone can view; Org Admins and Manage Plants & Teams holders can change |
 | Users & Permissions → Users, Roles | Everyone can view; actions per §6 and §7.7 |
-| FrinksEdge Download | Org Admins, and users with the switch on. Others see it greyed out |
-| Manual Assistant | Org Admins, and users with the switch on. Others see it greyed out |
-| Download Demo License button (Projects page) | Org Admins, and users with the switch on. Others see it greyed out |
+| FrinksEdge Download | Org Admins, and users with the toggle on. Others see it greyed out |
+| Manual Assistant | Org Admins, and users with the toggle on. Others see it greyed out |
+| Download Demo License button (Projects page) | Org Admins, and users with the toggle on. Others see it greyed out |
 
 **Greyed out vs. hidden**
 - Actions a person can't use are **greyed out with a hover message** saying what's needed.
@@ -382,7 +394,7 @@ These are required for v2 to be trustworthy.
 1. **Every permission is checked on the server for every request,** including reads. A greyed-out button is never the only protection.
 2. **Company wall:** the server confirms that every item belongs to the user's company.
 3. **The server works out the project, plant, team and company from the item itself,** never from what the browser sends.
-4. **Changes apply immediately:** a change to roles, switches, status, placement or project access, or a delete, takes effect on the person's next action, with no re-login.
+4. **Changes apply immediately:** a change to roles, toggles, status, placement or project access, or a delete, takes effect on the person's next action, with no re-login.
 5. **Locked roles are locked on the server,** not just on screen.
 
 ---
@@ -394,14 +406,14 @@ These are required for v2 to be trustworthy.
 | Plants and teams | Plants and teams | Kept as they are. |
 | User plant and team | User plant and team | Kept. Non-admins missing either are listed so an Org Admin can fill them in. |
 | Org Admin role | Org Admin | Direct. |
-| Other people with company-level rights, including people who manage users today | Decided one by one | They are listed. For each, decide Org Admin, a Manage Users role, or work roles only. |
-| Standard User only (12 people today) | Viewer | Direct. |
+| Other people with company-level rights, including people who manage users, plants or teams today | Decided one by one | They are listed. For each, decide Org Admin, an organisation role, or work roles only. |
+| Standard User only (12 people today) | Viewer | They get no role, which makes them Viewers. |
 | Custom roles (per-item ticks) | Built-in or custom roles | For each role, collect every permission type it has on any project and make that its standard. Match to built-in roles where they fit; keep the rest as custom roles. |
 | Several roles per user | Several roles per user | Kept. |
 | Access to a project | Project membership | Anyone with any permission on a project today becomes a member. |
 | Project creator | Project creator | Kept. Creators who were deleted show as "Name (deactivated)". |
 | Instance plant and team | Instance plant and team | Kept. Instances missing either are listed so an Org Admin can fill them in. |
-| FrinksEdge Download, Demo License, Manual Assistant (visible to everyone today) | Other access switches | Switched on for all existing users, so nobody loses access on the day. |
+| FrinksEdge Download, Demo License, Manual Assistant (visible to everyone today) | Other access toggles | Turned on for all existing users, so nobody loses access on the day. |
 
 **Review step:** Deb prepares a report per company before the switch-over, and the PM reviews it. It lists:
 - users and instances missing a plant or team;
@@ -422,27 +434,28 @@ These are required for v2 to be trustworthy.
 ## 16. User stories and acceptance criteria
 
 ### Story 1: Plants and Teams lists
-*As an Org Admin, I want to keep the plants and teams lists up to date, so that users and instances can be placed correctly.*
+*As an Org Admin or Manage Plants & Teams holder, I want to keep the plants and teams lists up to date, so that users and instances can be placed correctly.*
 - **AC1.** Teams & Plants shows two lists: plants and teams.
-- **AC2.** Only Org Admins can add, rename or delete. Everyone else sees the lists read-only, with the actions greyed out.
+- **AC2.** Only Org Admins and Manage Plants & Teams holders can add, rename or delete. Everyone else sees the lists read-only, with the actions greyed out.
 - **AC3.** A plant or team used by users or instances can't be deleted, and the message names what still uses it.
 
 ### Story 2: Add, edit and delete users
 *As an Org Admin or user manager, I want to give a user a plant, a team, roles and other access, so that they get the right access.*
 - **AC1.** Plant and Team are required for everyone except Org Admins.
-- **AC2.** Several roles can be selected. Viewer is pre-selected for new users.
-- **AC3.** User managers can edit any user in their scope except Org Admins. They can add or remove only roles they hold, plus Viewer; the Organisation-level role can also give Manage Users – Plant. Other roles show greyed out with a hover message.
-- **AC4.** Manage Users – Plant holders can add and edit only users of their own plant, and the Plant field is locked for them.
-- **AC5.** The three Other access switches appear with defaults off / off / on. For Org Admins they show on and locked. User managers can switch only the ones they have.
-- **AC6.** Status can be set to Active or Inactive. Inactive users are logged out at once.
-- **AC7.** Delete is permanent and asks for confirmation. The user is removed from all projects, their work stays, and projects they created show "Name (deactivated)".
-- **AC8.** Changing your own plant, team, roles, switches or status, or deleting yourself, is blocked. The last active Org Admin is protected. Removing Org Admin requires at least one other role.
-- **AC9.** A failed save never deletes the user. It shows an error and keeps the user as they were.
-- **AC10.** Everyone can see the Users list. The ⋮ menu shows only on rows the person can act on. Frinks staff aren't listed.
+- **AC2.** Roles are optional and several can be selected. Nothing is pre-selected.
+- **AC3.** The note under the Roles box reads *"If you don't assign any role, this user will have View access to all sections of Vision, in the projects they're added to."* A user saved with no role shows as Viewer.
+- **AC4.** User managers can edit any user in their scope except Org Admins. They can add or remove only roles they hold. The Organisation-level role can also give Manage Users – Plant. Other roles show greyed out with a hover message.
+- **AC5.** Manage Users – Plant holders can add and edit only users of their own plant, and the Plant field is locked for them.
+- **AC6.** The three Other access toggles appear with defaults off / off / on. For Org Admins they show on and locked. User managers can turn on or off only the ones they have on themselves.
+- **AC7.** Status can be set to Active or Inactive. Inactive users are logged out at once and keep their project memberships.
+- **AC8.** Delete is permanent and asks for confirmation. The user is removed from all projects, their work stays, projects they created show "Name (deactivated)", and the email can be invited again.
+- **AC9.** Changing your own plant, team, roles, toggles or status, or deleting yourself, is blocked. The last active Org Admin is protected.
+- **AC10.** A failed save never deletes the user. It shows an error and keeps the user as they were.
+- **AC11.** Everyone can see the Users list. The ⋮ menu shows only on rows the person can act on. Frinks staff aren't listed.
 
 ### Story 3: Roles
 *As an Org Admin, I want ready-made roles and the option to create my own, so that I rarely have to build roles from scratch.*
-- **AC1.** The 10 built-in roles exist in every company, show a lock and can only be viewed: Org Admin, Manage Users – Organisation, Manage Users – Plant, Viewer, Project Management, Recipe Management, Datasets Management, Annotation, AI Models, Instance Management.
+- **AC1.** The 11 built-in roles exist in every company, show a lock and can only be viewed: Viewer, Org Admin, Manage Users – Organisation, Manage Users – Plant, Manage Plants & Teams, Project Management, Recipe Management, Datasets Management, Annotation, AI Models, Instance Management.
 - **AC2.** Only Org Admins can create, edit or delete custom roles, using the grid in §7.6.
 - **AC3.** In the grid, Annotations' Create, Edit and Delete always tick and untick together.
 - **AC4.** Save is greyed out until something changes. Duplicate names are refused with *"A role named X already exists."*
@@ -458,8 +471,8 @@ These are required for v2 to be trustworthy.
 
 ### Story 5: Work inside a project
 *As a project member, I want to see everything in the project and use only the actions my roles allow.*
-- **AC1.** Every member can view every section.
-- **AC2.** Actions the person can't use are greyed out with a hover message naming the role needed (§8.6). The server refuses them too.
+- **AC1.** Every member can open every section and see everything in it.
+- **AC2.** Actions the person can't use are greyed out with a hover message naming the role needed (§8.6). The server refuses them too. For example, a Recipe Management holder without AI Models can open the AI Models page, but Train, Edit Thresholds and Delete are greyed out.
 - **AC3.** Classes can be added only in the project drawer. Module configuration and the annotation job no longer offer it.
 - **AC4.** Dataset download offers images only. There is no annotation download.
 - **AC5.** A user with several roles gets all the actions of all their roles.
@@ -494,7 +507,7 @@ These are required for v2 to be trustworthy.
 
 ---
 
-## 18. Decisions and open questions
+## 18. Decisions
 
 ### 18.1 Decided
 
@@ -502,39 +515,28 @@ These are required for v2 to be trustworthy.
 |---|---|
 | D1 | Plants and teams only; divisions and sub-divisions come later. One plant and one team per user. Org Admins need neither. |
 | D2 | One admin role: Org Admin. No plant-level or division-level admins. |
-| D3 | Two user-management roles, Manage Users – Organisation and Manage Users – Plant. They add, edit and delete users in their scope. They can edit everything about a user except roles: they add or remove only roles they hold. The Organisation-level role can also give Manage Users – Plant. |
-| D4 | Users can be deleted permanently, as well as set Inactive. |
-| D5 | New Viewer role, pre-selected for new users. Standard-User-only people move to Viewer. |
-| D6 | Project Management adds cameras, variants and classes. Recipe Management adds recipes (captures). |
-| D7 | Annotations: View plus Create, with Edit and Delete tied to Create. Auto-annotation is part of it. No annotation download. |
-| D8 | Dataset download is images only, and needs Datasets Management. |
-| D9 | The project creator is added automatically, can't be removed, and has no special rights. Edit Project shows a greyed-out "Project Creator" field. |
-| D10 | Project creators can add users from any plant. Invited users can't be added. |
-| D11 | Unavailable actions are greyed out with a hover message. |
-| D12 | Everyone can see the Users and Roles lists. ⋮ menus only for people who can act. |
-| D13 | Only Org Admins create, edit and delete custom roles. |
-| D14 | Instances need a plant and team. Visibility, details, downloads and the demo licence follow the same rule. Only Org Admins move instances. |
-| D15 | Change Org: members removed, creator "Transferred", all instances become drafts, the new Org Admin assigns plant and team. |
-| D16 | Frinks Org Admins act as Org Admins in customer companies and are hidden from their Users list. |
-| D17 | Inferencing Customizations and keygen: code commented out, nothing in the UI. |
+| D3 | Everyone is a Viewer by default. Roles are optional. A note under the Roles box explains that no role means View access. |
+| D4 | Two user-manager roles, Manage Users – Organisation and Manage Users – Plant. They add, edit and delete users in their scope. They change roles and Other access toggles only within what they hold themselves. The Organisation-level role can also give Manage Users – Plant. |
+| D5 | User managers can't change or delete Org Admins. Manage Users – Plant holders can't move users to another plant. |
+| D6 | New Manage Plants & Teams role, for changing the Plants and Teams lists alongside Org Admins. |
+| D7 | Users can be deleted permanently, as well as set Inactive. Inactive users keep their project memberships. A deleted user's email can be invited again. |
+| D8 | Project Management adds cameras, variants and classes. Recipe Management adds recipes (captures). |
+| D9 | Annotations: View plus Create, with Edit and Delete tied to Create. Auto-annotation is part of it. No annotation download. |
+| D10 | Dataset download is images only, and needs Datasets Management. |
+| D11 | The project creator is added automatically, can't be removed, and has no special rights. Edit Project shows a greyed-out "Project Creator" field. |
+| D12 | Project creators can add users from any plant. Invited users can't be added. |
+| D13 | Unavailable actions are greyed out with a hover message. This includes menu items for toggles that are off. |
+| D14 | Everyone can see the Users and Roles lists. ⋮ menus only for people who can act. |
+| D15 | Only Org Admins create, edit and delete custom roles. |
+| D16 | Instances need a plant and team. Visibility, details, downloads and the demo licence follow the same rule. Only Org Admins move instances. |
+| D17 | Change Org: members removed, creator "Transferred", all instances become drafts, the new Org Admin assigns plant and team. |
+| D18 | Frinks Org Admins act as Org Admins in customer companies and are hidden from their Users list. |
+| D19 | Someone who loses Org Admin keeps access to projects they created. |
+| D20 | Inferencing Customizations and keygen: code commented out, nothing in the UI. |
 
 ### 18.2 Defaults to confirm
 
 | # | Default used in this draft |
 |---|---|
-| C1 | User managers can't edit or delete Org Admins. |
-| C2 | User managers can always give or remove Viewer. |
-| C3 | User managers can switch on or off only the Other access switches they have themselves. |
-| C4 | Manage Users – Plant holders can't move a user to another plant. |
-| C5 | A deleted user's email can be invited again later as a new user. |
-| C6 | Only Org Admins change the Plants and Teams lists. Everyone else can view them. |
-| C7 | FrinksEdge Download and Manual Assistant menu items are greyed out, not hidden, when the switch is off. |
-| C8 | Inactive users keep their project memberships. Re-activating restores access. |
-| C9 | Someone who loses Org Admin keeps access to projects they created. |
-
-### 18.3 Still open
-
-| # | Question |
-|---|---|
-| Q1 | How long can someone stay logged in (idle timeout and maximum session)? |
-| Q2 | Button-by-button permission list: to follow from the PM. |
+| C1 | Manage Plants & Teams holders can also rename and delete plants and teams (delete blocked while in use), not just add them. |
+| C2 | Removing Org Admin from someone with no other role leaves them as a Viewer. Because no role now means Viewer, this replaces the earlier rule that another role had to be given first. |
