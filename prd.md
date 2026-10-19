@@ -87,11 +87,11 @@ title: Vision Access v2 PRD
 
 ## 5. Plants and Teams
 
-- The existing **Teams & Plants** section stays: one list of plants and one list of teams. They are not linked to each other.
-- The lists rarely change, so an Org Admin can add users or create projects in any order.
-- **Org Admins and Manage Plants & Teams holders** add, rename and delete plants and teams. Everyone else can only view the lists.
-- A plant or team **can't be deleted** while users or instances still use it. The message names what is left, e.g. *"Line B is still used by 3 users and 1 instance. Move them first."*
+- No change from today's setup: the **Teams & Plants** section keeps one fixed list of plants and one fixed list of teams. They are not linked to each other.
+- **New plants and teams can be added. Existing ones can't be renamed or deleted.**
+- **Org Admins and Manage Plants & Teams holders** can add them. Everyone else can only view the lists.
 - Names must be unique within each list.
+- Because the lists are fixed, an Org Admin can add users or create projects in any order.
 
 ---
 
@@ -158,7 +158,7 @@ These are three on/off toggles in the Add/Edit User drawer.
 - **No self-changes:** nobody can change their own plant, team, roles, toggles or status, or delete themselves.
 - **Last Org Admin:** the last active Org Admin can't be deactivated, deleted or lose Org Admin. The message reads *"Make someone else an Org Admin first."*
 - **Removing Org Admin** from someone:
-  - they keep any other roles they have, or become a Viewer if they have none;
+  - they keep any other roles they have. If they have none, they become a Viewer;
   - no warning is shown;
   - they keep access to projects they created, and are added to other projects as needed.
 
@@ -180,7 +180,7 @@ All built-in roles are **locked**: they can't be edited or deleted.
 - The only person who can move an instance to another plant or team.
 - Manages all users and can give any role (§6.2).
 - The only person who creates, edits and deletes custom roles.
-- Changes the Plants and Teams lists.
+- Adds new plants and teams.
 - Always has FrinksEdge Download, Download Demo License and Manual Assistant.
 - Doesn't need a plant or team.
 
@@ -190,7 +190,7 @@ All built-in roles are **locked**: they can't be edited or deleted.
 |---|---|
 | **Manage Users – Organisation** | Add, edit and delete users in any plant. Roles and toggles are limited as in §6.3. |
 | **Manage Users – Plant** | The same, within their own plant. |
-| **Manage Plants & Teams** | Add, rename and delete plants and teams (§5). |
+| **Manage Plants & Teams** | Add new plants and teams (§5). Existing ones can't be renamed or deleted. |
 
 ### 7.4 Work roles
 
@@ -363,7 +363,7 @@ When Frinks staff move a project to another company:
 | Menu item | Who can use it |
 |---|---|
 | Projects | Everyone |
-| Teams & Plants | Everyone can view; Org Admins and Manage Plants & Teams holders can change |
+| Teams & Plants | Everyone can view; Org Admins and Manage Plants & Teams holders can add new plants and teams |
 | Users & Permissions → Users, Roles | Everyone can view; actions per §6 and §7.7 |
 | FrinksEdge Download | Org Admins, and users with the toggle on. Others see it greyed out |
 | Manual Assistant | Org Admins, and users with the toggle on. Others see it greyed out |
@@ -434,10 +434,11 @@ These are required for v2 to be trustworthy.
 ## 16. User stories and acceptance criteria
 
 ### Story 1: Plants and Teams lists
-*As an Org Admin or Manage Plants & Teams holder, I want to keep the plants and teams lists up to date, so that users and instances can be placed correctly.*
-- **AC1.** Teams & Plants shows two lists: plants and teams.
-- **AC2.** Only Org Admins and Manage Plants & Teams holders can add, rename or delete. Everyone else sees the lists read-only, with the actions greyed out.
-- **AC3.** A plant or team used by users or instances can't be deleted, and the message names what still uses it.
+*As an Org Admin or Manage Plants & Teams holder, I want to add new plants and teams, so that users and instances can be placed correctly.*
+- **AC1.** Teams & Plants shows two fixed lists: plants and teams.
+- **AC2.** Only Org Admins and Manage Plants & Teams holders can add a plant or team. Everyone else sees the Add button greyed out with a hover message.
+- **AC3.** Existing plants and teams can't be renamed or deleted. There are no Rename or Delete actions.
+- **AC4.** A name already in the list is refused with *"A plant named X already exists."*
 
 ### Story 2: Add, edit and delete users
 *As an Org Admin or user manager, I want to give a user a plant, a team, roles and other access, so that they get the right access.*
@@ -509,7 +510,6 @@ These are required for v2 to be trustworthy.
 
 ## 18. Decisions
 
-### 18.1 Decided
 
 | # | Decision |
 |---|---|
@@ -518,7 +518,7 @@ These are required for v2 to be trustworthy.
 | D3 | Everyone is a Viewer by default. Roles are optional. A note under the Roles box explains that no role means View access. |
 | D4 | Two user-manager roles, Manage Users – Organisation and Manage Users – Plant. They add, edit and delete users in their scope. They change roles and Other access toggles only within what they hold themselves. The Organisation-level role can also give Manage Users – Plant. |
 | D5 | User managers can't change or delete Org Admins. Manage Users – Plant holders can't move users to another plant. |
-| D6 | New Manage Plants & Teams role, for changing the Plants and Teams lists alongside Org Admins. |
+| D6 | Plants and teams stay fixed flat lists, as today. New ones can be added; existing ones can't be renamed or deleted. Org Admins and the new Manage Plants & Teams role can add them. |
 | D7 | Users can be deleted permanently, as well as set Inactive. Inactive users keep their project memberships. A deleted user's email can be invited again. |
 | D8 | Project Management adds cameras, variants and classes. Recipe Management adds recipes (captures). |
 | D9 | Annotations: View plus Create, with Edit and Delete tied to Create. Auto-annotation is part of it. No annotation download. |
@@ -533,10 +533,4 @@ These are required for v2 to be trustworthy.
 | D18 | Frinks Org Admins act as Org Admins in customer companies and are hidden from their Users list. |
 | D19 | Someone who loses Org Admin keeps access to projects they created. |
 | D20 | Inferencing Customizations and keygen: code commented out, nothing in the UI. |
-
-### 18.2 Defaults to confirm
-
-| # | Default used in this draft |
-|---|---|
-| C1 | Manage Plants & Teams holders can also rename and delete plants and teams (delete blocked while in use), not just add them. |
-| C2 | Removing Org Admin from someone with no other role leaves them as a Viewer. Because no role now means Viewer, this replaces the earlier rule that another role had to be given first. |
+| D21 | Removing Org Admin from someone with no other role leaves them as a Viewer. |
