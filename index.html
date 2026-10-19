@@ -311,10 +311,13 @@ const XS=[{id:'edge',name:'FrinksEdge Download',short:'Edge'},{id:'lic',name:'Do
 const TYPE={default:'Default',admin:'Admin',org:'Organisation',work:'Work',custom:'Custom'};
 const NOTE_ROLES="If you don't assign any role, this user will have View access to all sections of Vision, in the projects they're added to.";
 const CAPS={
-  org_admin:['Sees every project and has every permission inside each one','Sees all instances, including drafts','The only person who can move an instance to another plant or team','Manages all users and can give any role','The only person who creates, edits and deletes custom roles','Adds new plants and teams','Always has FrinksEdge Download, Download Demo License and Manual Assistant','Doesn’t need a plant or team'],
-  mu_org:['Adds, edits and deletes users in any plant','Can’t change or delete Org Admins','Gives or removes only the roles and Other access they hold, plus Manage Users – Plant','Nothing extra inside projects'],
-  mu_plant:['Adds, edits and deletes users in their own plant','Can’t move users to another plant','Can’t change or delete Org Admins','Gives or removes only the roles and Other access they hold','Nothing extra inside projects'],
+  org_admin:['Sees every project and has every permission inside each one','Sees all instances, including drafts','The only person who can move an instance to another plant or team','Manages all users and can give any role','The only person who creates, edits and deletes custom roles','Adds new plants and teams','Has every role, including FrinksEdge Download, Download Demo License and Manual Assistant','Doesn’t need a plant or team'],
+  mu_org:['Adds, edits and deletes users in any plant','Can’t change or delete Org Admins','Gives or removes only the roles they hold, plus Manage Users – Plant','Nothing extra inside projects'],
+  mu_plant:['Adds, edits and deletes users in their own plant','Can’t move users to another plant','Can’t change or delete Org Admins','Gives or removes only the roles they hold','Nothing extra inside projects'],
   mpt:['Adds new plants and teams','Existing plants and teams can’t be renamed or deleted','Nothing extra inside projects'],
+  x_edge:['Opens the FrinksEdge Download page','Nothing else'],
+  x_lic:['Shows the Download Demo License button on the Projects page','Only for projects they’re on and instances of their plant and team','Nothing else'],
+  x_manual:['Opens the Manual Assistant chatbot and manuals','Nothing else'],
 };
 
 let seq=100; const nid=p=>p+(++seq);
@@ -334,21 +337,24 @@ const D={
     {id:'r_annotation',name:'Annotation',type:'work',area:'annotation',desc:'Annotate, auto-annotate, edit and delete annotations'},
     {id:'r_models',name:'AI Models',type:'work',area:'models',desc:'Train models, edit thresholds, delete models'},
     {id:'r_instances',name:'Instance Management',type:'work',area:'instances',desc:'Instances in their own plant and team'},
+    {id:'x_edge',name:'FrinksEdge Download',type:'access',desc:'Opens the FrinksEdge Download page'},
+    {id:'x_lic',name:'Download Demo License',type:'access',desc:'Shows the Download Demo License button'},
+    {id:'x_manual',name:'Manual Assistant',type:'access',desc:'Opens the Manual Assistant chatbot and manuals'},
   ],
   deleted:{u99:'Suresh Pillai'},
   users:[
-    {id:'u1',name:'Ananya Rao',email:'ananya.rao@acme.example',phone:'9800000001',plant:null,team:null,roles:['org_admin'],x:{edge:true,lic:true,manual:true},status:'Active'},
-    {id:'u2',name:'Rahul Mehta',email:'rahul.mehta@acme.example',phone:'9800000002',plant:'p1',team:'t1',roles:['mu_org','r_project'],x:{edge:false,lic:true,manual:true},status:'Active'},
-    {id:'u3',name:'Kavya Iyer',email:'kavya.iyer@acme.example',phone:'9800000003',plant:'p2',team:'t2',roles:['mu_plant','r_annotation'],x:{edge:false,lic:false,manual:true},status:'Active'},
-    {id:'u4',name:'Vikram Shah',email:'vikram.shah@acme.example',phone:'9800000004',plant:'p1',team:'t1',roles:['r_project','r_recipe'],x:{edge:false,lic:false,manual:true},status:'Active'},
-    {id:'u5',name:'Priya Nair',email:'priya.nair@acme.example',phone:'9800000005',plant:'p1',team:'t2',roles:['r_annotation','r_datasets'],x:{edge:false,lic:false,manual:true},status:'Active'},
-    {id:'u6',name:'Arjun Das',email:'arjun.das@acme.example',phone:'9800000006',plant:'p2',team:'t2',roles:['r_instances'],x:{edge:true,lic:true,manual:true},status:'Active'},
-    {id:'u7',name:'Meera Joshi',email:'meera.joshi@acme.example',phone:'9800000007',plant:'p2',team:'t4',roles:['r_models'],x:{edge:false,lic:false,manual:true},status:'Active'},
-    {id:'u8',name:'Sanjay Kulkarni',email:'sanjay.k@acme.example',phone:'9800000008',plant:'p1',team:'t3',roles:['mpt','r_recipe'],x:{edge:false,lic:false,manual:false},status:'Active'},
-    {id:'u10',name:'Farhan Ali',email:'farhan.ali@acme.example',phone:'9800000010',plant:'p1',team:'t2',roles:[],x:{edge:false,lic:false,manual:true},status:'Active'},
-    {id:'u9',name:'Deepa Menon',email:'deepa.menon@acme.example',phone:'9800000009',plant:'p2',team:'t2',roles:[],x:{edge:false,lic:false,manual:true},status:'Invited'},
-    {id:'u11',name:'Nikhil Rao',email:'nikhil.rao@acme.example',phone:'9800000011',plant:'p2',team:'t4',roles:['r_datasets'],x:{edge:false,lic:false,manual:true},status:'Inactive'},
-    {id:'f1',name:'Frinks Support',email:'support@frinks.example',phone:'',plant:null,team:null,roles:['org_admin'],x:{edge:true,lic:true,manual:true},status:'Active',frinks:true},
+    {id:'u1',name:'Ananya Rao',email:'ananya.rao@acme.example',phone:'9800000001',plant:null,team:null,roles:['org_admin'],status:'Active'},
+    {id:'u2',name:'Rahul Mehta',email:'rahul.mehta@acme.example',phone:'9800000002',plant:'p1',team:'t1',roles:['mu_org','r_project','x_lic','x_manual'],status:'Active'},
+    {id:'u3',name:'Kavya Iyer',email:'kavya.iyer@acme.example',phone:'9800000003',plant:'p2',team:'t2',roles:['mu_plant','r_annotation','x_manual'],status:'Active'},
+    {id:'u4',name:'Vikram Shah',email:'vikram.shah@acme.example',phone:'9800000004',plant:'p1',team:'t1',roles:['r_project','r_recipe','x_manual'],status:'Active'},
+    {id:'u5',name:'Priya Nair',email:'priya.nair@acme.example',phone:'9800000005',plant:'p1',team:'t2',roles:['r_annotation','r_datasets','x_manual'],status:'Active'},
+    {id:'u6',name:'Arjun Das',email:'arjun.das@acme.example',phone:'9800000006',plant:'p2',team:'t2',roles:['r_instances','x_edge','x_lic','x_manual'],status:'Active'},
+    {id:'u7',name:'Meera Joshi',email:'meera.joshi@acme.example',phone:'9800000007',plant:'p2',team:'t4',roles:['r_models','x_manual'],status:'Active'},
+    {id:'u8',name:'Sanjay Kulkarni',email:'sanjay.k@acme.example',phone:'9800000008',plant:'p1',team:'t3',roles:['mpt','r_recipe'],status:'Active'},
+    {id:'u10',name:'Farhan Ali',email:'farhan.ali@acme.example',phone:'9800000010',plant:'p1',team:'t2',roles:[],status:'Active'},
+    {id:'u9',name:'Deepa Menon',email:'deepa.menon@acme.example',phone:'9800000009',plant:'p2',team:'t2',roles:[],status:'Invited'},
+    {id:'u11',name:'Nikhil Rao',email:'nikhil.rao@acme.example',phone:'9800000011',plant:'p2',team:'t4',roles:['r_datasets','x_manual'],status:'Inactive'},
+    {id:'f1',name:'Frinks Support',email:'support@frinks.example',phone:'',plant:null,team:null,roles:['org_admin'],status:'Active',frinks:true},
   ],
   projects:[
     {id:'pr1',name:'Door Panel Inspection',desc:'Dent and scratch check on front and rear door panels',createdBy:'u4',createdAt:'Sep 18, 2026',members:['u4','u5','u6','u10','u2','u11'],
@@ -396,7 +402,7 @@ const teamN=id=>id?((D.teams.find(x=>x.id===id)||{}).name||'—'):'—';
 const initials=n=>String(n).split(' ').filter(Boolean).map(x=>x[0]).slice(0,2).join('').toUpperCase();
 const me=()=>U(S.me);
 const isOA=u=>!!u&&u.roles.includes('org_admin');
-const hasX=(k,u=me())=>isOA(u)||!!(u.x&&u.x[k]);
+const hasX=(k,u=me())=>isOA(u)||u.roles.includes('x_'+k);
 function userMgr(u=me()){if(isOA(u))return 'all';if(u.roles.includes('mu_org'))return 'org';if(u.roles.includes('mu_plant'))return 'plant';return null;}
 const canPT=(u=me())=>isOA(u)||u.roles.includes('mpt');
 function emptyP(){const a={};AREAS.forEach(ar=>{a[ar.id]={};ar.cols.forEach(c=>a[ar.id][c]=false)});return a;}
@@ -413,13 +419,12 @@ const canDeleteProject=(p,u=me())=>isOA(u)||can('project','delete',u);
 const canManageAccess=(p,u=me())=>isOA(u)||(can('project','edit',u)&&(p.members.includes(u.id)||p.createdBy===u.id));
 function canActOnUser(t,a=me()){const m=userMgr(a);if(!m)return false;if(t.id===a.id)return true;if(m==='all')return true;if(isOA(t))return false;if(m==='org')return true;return t.plant===a.plant;}
 function canGiveRole(r,a=me()){if(isOA(a))return true;if(!userMgr(a))return false;if(r.id==='org_admin')return false;if(a.roles.includes(r.id))return true;if(r.id==='mu_plant'&&a.roles.includes('mu_org'))return true;return false;}
-const canGiveX=(k,a=me())=>isOA(a)||(!!userMgr(a)&&!!(a.x&&a.x[k]));
 const customers=()=>D.users.filter(u=>!u.frinks);
 function lastOA(t){const oas=customers().filter(u=>isOA(u)&&u.status==='Active');return isOA(t)&&!t.frinks&&oas.length<=1;}
 function rolesLine(u){return u.roles.length?u.roles.map(r=>(R(r)||{}).name).filter(Boolean).join(', '):'Viewer';}
 function placement(u){return isOA(u)?'No plant or team':`${plantN(u.plant)} / ${teamN(u.team)}`;}
-function roleChip(id){const r=R(id);if(!r)return '';const c={admin:'adm',org:'org',custom:'cus',default:'gray'}[r.type]||'';return `<span class="chip ${c}">${esc(r.name)}</span>`;}
-function roleChips(u){return u.roles.length?u.roles.map(roleChip).join(''):'<span class="chip gray">Viewer</span>';}
+function roleChip(id){const r=R(id);if(!r)return '';const c=r.type==='admin'?'adm':'';return `<span class="chip ${c}">${esc(r.name)}</span>`;}
+function roleChips(u){return u.roles.length?u.roles.map(roleChip).join(''):'<span class="chip">Viewer</span>';}
 function creatorLabel(p){if(p.transferred)return 'Transferred';const u=U(p.createdBy);if(!u)return (D.deleted[p.createdBy]||'Unknown')+' (deactivated)';if(u.status==='Inactive')return u.name+' (deactivated)';return u.name;}
 function cb(on,attrs='',cls=''){return `<span class="cb ${on?'on':''} ${cls}" ${attrs}>${I.check}</span>`;}
 function toast(msg,ok=true){S.toast={msg,ok};clearTimeout(window.__t);window.__t=setTimeout(()=>{S.toast=null;render()},2800);}
@@ -438,8 +443,8 @@ function sidebar(){
   h+=mi('projects',I.folder,'Projects');
   h+=`<li><div class="mi grp"><span class="ic">${I.person}</span><span class="t">Teams &amp; Plants</span></div><ul class="subm">${sub('plants','Plants')}${sub('teams','Teams')}</ul></li>`;
   h+=`<li><div class="mi grp"><span class="ic">${I.users}</span><span class="t">Users &amp; Permissions</span></div><ul class="subm">${sub('users','Users')}${sub('roles','Roles')}</ul></li>`;
-  h+=hasX('edge')?mi('edge',I.edge,'FrinksEdge Download'):grey(I.edge,'FrinksEdge Download','Ask your admin to turn on FrinksEdge Download for you.');
-  h+=hasX('manual')?mi('manual',I.chat,'Manual Assistant'):grey(I.chat,'Manual Assistant','Ask your admin to turn on Manual Assistant for you.');
+  h+=hasX('edge')?mi('edge',I.edge,'FrinksEdge Download'):grey(I.edge,'FrinksEdge Download','You need the FrinksEdge Download role.');
+  h+=hasX('manual')?mi('manual',I.chat,'Manual Assistant'):grey(I.chat,'Manual Assistant','You need the Manual Assistant role.');
   return h+`</ul>${whoBox()}</aside>`;
 }
 function whoMenu(cls=''){
@@ -453,7 +458,7 @@ function whoBox(){
 /* ======================= PROJECTS ======================= */
 function pageProjects(){
   const u=me();const vis=D.projects.filter(p=>projVisible(p));
-  const lic=hasX('lic')?`<button class="btn md" data-a="lic">Download Demo License</button>`:`<button class="btn md gd" data-tip="Ask your admin to turn on Download Demo License for you.">Download Demo License</button>`;
+  const lic=hasX('lic')?`<button class="btn md" data-a="lic">Download Demo License</button>`:`<button class="btn md gd" data-tip="You need the Download Demo License role.">Download Demo License</button>`;
   const orgSw=u.frinks?`<select class="sel" style="width:210px" data-a="orgsw"><option>${D.org}</option><option>Northwind Plastics</option><option>Globex Components</option></select>`:'';
   let h=`<div class="heading"><div class="t">Projects</div><div class="acts">${orgSw}${lic}</div></div><div class="pad"><div class="grid">`;
   h+=canCreateProject()?`<div class="create" data-a="newProject"><div class="pl">+</div><h3>Start a new project</h3><p>Click to create</p></div>`
@@ -553,7 +558,7 @@ function pageUsers(){
         items.push(`<li class="red" data-a="delUser" data-id="${t.id}">${I.trash} Delete</li>`);
       }
     }
-    return `<tr class="${t.status==='Inactive'?'dim':''}"><td>${esc(t.name)}${t.id===u.id?' <span class="chip gray">You</span>':''}</td><td>${esc(t.email)}</td><td>${isOA(t)?'—':plantN(t.plant)}</td><td>${isOA(t)?'—':teamN(t.team)}</td><td style="max-width:260px">${roleChips(t)}</td><td>${isOA(t)?'<span class="chip gray">All</span>':XS.filter(e=>t.x&&t.x[e.id]).map(e=>`<span class="chip gray">${e.short}</span>`).join('')||'<span style="color:var(--g400)">—</span>'}</td><td><span class="st ${t.status}">${t.status}</span></td><td>${items.length?`<span class="dd"><span class="ib" data-a="menu" data-id="u_${t.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
+    return `<tr class="${t.status==='Inactive'?'dim':''}"><td>${esc(t.name)}${t.id===u.id?' <span class="chip gray">You</span>':''}</td><td>${esc(t.email)}</td><td>${isOA(t)?'—':plantN(t.plant)}</td><td>${isOA(t)?'—':teamN(t.team)}</td><td style="max-width:320px">${roleChips(t)}</td><td><span class="st ${t.status}">${t.status}</span></td><td>${items.length?`<span class="dd"><span class="ib" data-a="menu" data-id="u_${t.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
   }).join('');
   const addBtn=userMgr()?`<button class="btn" data-a="newUser">Add User</button>`:`<button class="btn gd" data-tip="You need a Manage Users role to add users.">Add User</button>`;
   return `<div class="heading"><div class="t">Users</div><div class="acts">${addBtn}</div></div>
@@ -561,22 +566,21 @@ function pageUsers(){
     <select class="sel" style="width:170px" data-a="uf" data-f="plant"><option value="">All plants</option>${D.plants.map(p=>`<option value="${p.id}" ${f.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
     <select class="sel" style="width:170px" data-a="uf" data-f="team"><option value="">All teams</option>${D.teams.map(p=>`<option value="${p.id}" ${f.team===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
     <input class="in" style="width:240px" placeholder="Search name or email" data-uq value="${esc(f.q)}"></div></div>
-  <div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>User Name</th><th>Email</th><th>Plant</th><th>Team</th><th>Role(s)</th><th>Other Access</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${rows||'<tr><td colspan="8" class="empty">No users found</td></tr>'}</tbody></table></div></div>`;
+  <div class="pad" style="padding-top:0"><div class="tw"><table class="t"><thead><tr><th>User Name</th><th>Email</th><th>Plant</th><th>Team</th><th>Role(s)</th><th>Status</th><th style="width:60px"></th></tr></thead><tbody>${rows||'<tr><td colspan="7" class="empty">No users found</td></tr>'}</tbody></table></div></div>`;
 }
 
 /* ======================= ROLES ======================= */
 function pageRoles(){
   const oa=isOA(me());
-  const order={default:0,admin:1,org:2,work:3,custom:4};
-  const rows=[...D.roles].sort((a,b)=>order[a.type]-order[b.type]).map(r=>{
+  const rows=D.roles.map(r=>{
     const n=r.id==='viewer'?'Everyone':customers().filter(u=>u.roles.includes(r.id)).length;
     const mOpen=S.menu==='r_'+r.id;
     const items=[`<li data-a="viewRole" data-id="${r.id}">${I.eye} View</li>`];
     if(r.type==='custom')items.push(`<li data-a="editRole" data-id="${r.id}">${I.pen} Edit</li>`,`<li class="red" data-a="delRole" data-id="${r.id}">${I.trash} Delete</li>`);
-    return `<tr><td class="l">${r.type!=='custom'?`<span style="color:var(--g400);margin-right:6px">${I.lock}</span>`:''}${esc(r.name)}</td><td><span class="chip ${r.type==='admin'?'adm':r.type==='org'?'org':r.type==='custom'?'cus':r.type==='default'?'gray':''}">${TYPE[r.type]}</span></td><td>${esc(r.desc)}</td><td>${n}</td><td>${oa?`<span class="dd"><span class="ib" data-a="menu" data-id="r_${r.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
+    return `<tr><td class="l">${r.type!=='custom'?`<span style="color:var(--g400);margin-right:6px">${I.lock}</span>`:''}${esc(r.name)}</td><td>${esc(r.desc)}</td><td>${n}</td><td>${oa?`<span class="dd"><span class="ib" data-a="menu" data-id="r_${r.id}">${I.dots}</span>${mOpen?`<ul class="ddm">${items.join('')}</ul>`:''}</span>`:''}</td></tr>`;
   }).join('');
   const addBtn=oa?`<button class="btn" data-a="newRole">Add Role</button>`:`<button class="btn gd" data-tip="Only Org Admins can create roles.">Add Role</button>`;
-  return `<div class="heading"><div class="t">Roles</div><div class="acts">${addBtn}</div></div><div class="pad"><div class="tw"><table class="t"><thead><tr><th class="l">Role Name</th><th>Type</th><th>Description</th><th>Users Assigned</th><th style="width:80px"></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  return `<div class="heading"><div class="t">Roles</div><div class="acts">${addBtn}</div></div><div class="pad"><div class="tw"><table class="t"><thead><tr><th class="l">Role Name</th><th>Description</th><th>Users Assigned</th><th style="width:80px"></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
 }
 
 /* ======================= STUB PAGES ======================= */
@@ -617,20 +621,18 @@ function drawerProject(d){
 function lockWrap(locked,tip,inner){return locked?`<div data-tip="${esc(tip)}">${inner}</div>`:inner;}
 function drawerUser(d){
   const a=me();const self=d.id===a.id;const oa=d.roles.includes('org_admin');
-  const selfTip='You can’t change your own access.';const giveTip='You can only give access you have yourself.';
+  const selfTip='You can’t change your own access.';const giveTip='You can only give roles you have yourself.';
   const plantOpts=userMgr(a)==='plant'?D.plants.filter(p=>p.id===a.plant):D.plants;
   const plantLocked=self||oa||userMgr(a)==='plant';
   const plantSel=oa?`<select class="sel" disabled><option>All plants</option></select>`:`<select class="sel" data-a="dsel" data-f="plant" ${plantLocked?'disabled':''}><option value="">Select</option>${plantOpts.map(p=>`<option value="${p.id}" ${d.plant===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>`;
   const teamSel=oa?`<select class="sel" disabled><option>All teams</option></select>`:`<select class="sel" data-a="dsel" data-f="team" ${self?'disabled':''}><option value="">Select</option>${D.teams.map(p=>`<option value="${p.id}" ${d.team===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>`;
   const plantTip=oa?'Org Admins don’t need a plant or team.':self?selfTip:'Users you add stay in your own plant.';
-  const grp=(title,list)=>!list.length?'':`<div class="rgroup"><div class="gh">${title}</div>${list.map(r=>{const on=d.roles.includes(r.id);const ok=!self&&canGiveRole(r,a);
-    return ok?`<div class="ropt ${on?'on':''}" data-a="pickRole" data-id="${r.id}">${cb(on)}<div><div class="rn">${esc(r.name)}</div><div class="rd">${esc(r.desc)}</div></div></div>`
-             :`<div class="ropt gd ${on?'on':''}" data-tip="${self?selfTip:giveTip}">${cb(on,'','dis')}<div><div class="rn">${esc(r.name)}</div><div class="rd">${esc(r.desc)}</div></div></div>`;}).join('')}</div>`;
-  const xs=XS.map(x=>{
-    if(oa)return `<div class="ropt gd on" data-tip="Always on for Org Admins"><span class="sw on"></span><div class="rn">${x.name}</div></div>`;
-    const on=!!d.x[x.id];const ok=!self&&canGiveX(x.id,a);
-    return ok?`<div class="ropt ${on?'on':''}" data-a="pickX" data-id="${x.id}"><span class="sw ${on?'on':''}"></span><div class="rn">${x.name}</div></div>`
-             :`<div class="ropt gd ${on?'on':''}" data-tip="${self?selfTip:giveTip}"><span class="sw ${on?'on':''}"></span><div class="rn">${x.name}</div></div>`;}).join('');
+  const oaOk=!self&&isOA(a);
+  const oaRow=oaOk?`<div class="ropt ${oa?'on':''}" data-a="pickRole" data-id="org_admin">${cb(oa)}<div class="rn">Make user Org Admin</div></div>`
+                  :`<div class="ropt gd ${oa?'on':''}" data-tip="${self?selfTip:'Only Org Admins can make someone an Org Admin.'}">${cb(oa,'','dis')}<div class="rn">Make user Org Admin</div></div>`;
+  const opt=(r,on,ok,tip)=>ok?`<div class="ropt ${on?'on':''}" data-a="pickRole" data-id="${r.id}">${cb(on)}<div><div class="rn">${esc(r.name)}</div><div class="rd">${esc(r.desc)}</div></div></div>`
+                              :`<div class="ropt gd ${on?'on':''}" data-tip="${tip}">${cb(on,'','dis')}<div><div class="rn">${esc(r.name)}</div><div class="rd">${esc(r.desc)}</div></div></div>`;
+  const roleRows=D.roles.filter(r=>r.type!=='admin'&&r.type!=='default').map(r=>oa?opt(r,true,false,'Org Admins have every role.'):opt(r,d.roles.includes(r.id),!self&&canGiveRole(r,a),self?selfTip:giveTip)).join('');
   const t=d.id?U(d.id):null;
   const status=t&&t.status!=='Invited'?`<div><label class="lb">Status</label>${self?`<div class="ropt gd ${d.status==='Active'?'on':''}" data-tip="${selfTip}"><span class="sw ${d.status==='Active'?'on':''}"></span><div class="rn">${d.status}</div></div>`:`<div class="ropt ${d.status==='Active'?'on':''}" data-a="pickStatus"><span class="sw ${d.status==='Active'?'on':''}"></span><div class="rn">${d.status}</div></div>`}</div>`:'';
   const e=d.err||{};
@@ -640,13 +642,8 @@ function drawerUser(d){
     <div><label class="lb">Phone number</label><input class="in" data-f="phone" value="${esc(d.phone)}" placeholder="Enter contact number"></div>
     <div class="row2"><div><label class="lb">Plant${oa?'':' <span class="rq">*</span>'}</label>${lockWrap(plantLocked,plantTip,plantSel)}${e.plant?`<div class="err">${e.plant}</div>`:''}</div>
       <div><label class="lb">Team${oa?'':' <span class="rq">*</span>'}</label>${lockWrap(self||oa,oa?'Org Admins don’t need a plant or team.':selfTip,teamSel)}${e.team?`<div class="err">${e.team}</div>`:''}</div></div>
-    <div><label class="lb">Roles</label>
-      ${grp('Admin',D.roles.filter(r=>r.type==='admin'))}
-      ${grp('Organisation',D.roles.filter(r=>r.type==='org'))}
-      ${grp('Work',D.roles.filter(r=>r.type==='work'))}
-      ${grp('Custom',D.roles.filter(r=>r.type==='custom'))}
-      <div class="note">${NOTE_ROLES}</div></div>
-    <div><label class="lb">Other Access</label>${xs}</div>
+    ${oaRow}
+    <div><label class="lb">Roles</label><div class="note" style="margin:0 0 10px">${NOTE_ROLES}</div>${roleRows}</div>
     ${status}
   </div>`;
   return drawerShell(d.id?'Edit user':'Add a new user','xs',body,`<button class="btn bd" data-a="close">Cancel</button><button class="btn" data-a="saveUser">${d.id?'Save':'Send Invite'}</button>`);
@@ -695,7 +692,7 @@ function roleDrawer(d){
       <div class="fld"><div class="lb">Role Description<span class="rq">*</span></div><input class="in" data-f="desc" value="${esc(d.desc)}" placeholder="Enter role description" ${ro?'disabled':''}></div></div>`;
   } else if(ro&&r.type==='admin'){
     ct=`<div class="scope"><h3>${esc(r.name)}</h3><ul>${CAPS.org_admin.map(x=>`<li>${x}</li>`).join('')}</ul></div>`+permGrid(fullP(),true);
-  } else if(ro&&r.type==='org'){
+  } else if(ro&&(r.type==='org'||r.type==='access')){
     ct=`<div class="scope"><h3>${esc(r.name)}</h3><ul>${CAPS[r.id].map(x=>`<li>${x}</li>`).join('')}</ul></div>`+permGrid(emptyP(),true);
   } else if(ro&&r.type==='default'){
     ct=`<div class="scope"><h3>Viewer</h3><ul><li>Everyone has this role; it never needs to be given</li><li>View access to every section of the projects they’re added to</li><li>Every action stays greyed out unless another role allows it</li></ul></div>`+permGrid(emptyP(),true);
@@ -784,10 +781,9 @@ const A={
     arr.push({id:nid(kind[0]),name:v});toast(one+' added');}};},
 
   /* users */
-  newUser:()=>{const a=me();S.drawer={type:'user',id:null,name:'',email:'',phone:'',plant:userMgr(a)==='plant'?a.plant:'',team:'',roles:[],x:{edge:false,lic:false,manual:canGiveX('manual',a)},status:'Invited'};},
-  editUser:e=>{const t=U(e.dataset.id);S.drawer={type:'user',id:t.id,name:t.name,email:t.email,phone:t.phone,plant:t.plant||'',team:t.team||'',roles:[...t.roles],x:{...t.x},status:t.status};},
+  newUser:()=>{const a=me();S.drawer={type:'user',id:null,name:'',email:'',phone:'',plant:userMgr(a)==='plant'?a.plant:'',team:'',roles:[],status:'Invited'};},
+  editUser:e=>{const t=U(e.dataset.id);S.drawer={type:'user',id:t.id,name:t.name,email:t.email,phone:t.phone,plant:t.plant||'',team:t.team||'',roles:[...t.roles],status:t.status};},
   pickRole:e=>{const d=S.drawer,id=e.dataset.id;d.roles=d.roles.includes(id)?d.roles.filter(x=>x!==id):[...d.roles,id];},
-  pickX:e=>{const d=S.drawer;d.x[e.dataset.id]=!d.x[e.dataset.id];},
   pickStatus:()=>{const d=S.drawer;d.status=d.status==='Active'?'Inactive':'Active';},
   saveUser:()=>{const d=S.drawer;const oa=d.roles.includes('org_admin');const errs={};
     if(d.id){const t0=U(d.id);if(lastOA(t0)&&(!oa||d.status==='Inactive')){S.modal={title:'Can’t remove the last Org Admin',body:'Make someone else an Org Admin first.'};return;}}
@@ -796,9 +792,9 @@ const A={
     if(!oa&&!d.plant)errs.plant='Required';if(!oa&&!d.team)errs.team='Required';
     if(Object.keys(errs).length){d.err=errs;return;}
     if(d.id){const t=U(d.id);
-      Object.assign(t,{name:d.name.trim(),phone:d.phone,plant:oa?null:d.plant,team:oa?null:d.team,roles:[...d.roles],x:{...d.x},status:t.status==='Invited'?'Invited':d.status});
+      Object.assign(t,{name:d.name.trim(),phone:d.phone,plant:oa?null:d.plant,team:oa?null:d.team,roles:[...d.roles],status:t.status==='Invited'?'Invited':d.status});
       toast('User successfully updated!'+(t.roles.length?'':' They are now a Viewer.'));}
-    else{const em=d.email.trim();D.users.splice(D.users.length-1,0,{id:nid('u'),name:d.name.trim(),email:em,phone:d.phone,plant:oa?null:d.plant,team:oa?null:d.team,roles:[...d.roles],x:{...d.x},status:'Invited'});toast('Invitation sent to ['+esc(em)+']');}
+    else{const em=d.email.trim();D.users.splice(D.users.length-1,0,{id:nid('u'),name:d.name.trim(),email:em,phone:d.phone,plant:oa?null:d.plant,team:oa?null:d.team,roles:[...d.roles],status:'Invited'});toast('Invitation sent to ['+esc(em)+']');}
     S.drawer=null;},
   setStatus:e=>{const t=U(e.dataset.id);const s=e.dataset.s;
     if(s==='Inactive'&&lastOA(t)){S.modal={title:'Can’t deactivate the last Org Admin',body:'Make someone else an Org Admin first.'};return;}
