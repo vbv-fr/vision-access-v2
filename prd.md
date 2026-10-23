@@ -6,7 +6,7 @@ title: Vision Access v2 PRD
 
 **Product:** Frinks Vision  
 **Status:** Draft for review  
-**Date:** 19 October 2026  
+**Date:** 19 October 2026 (updated 23 October 2026)  
 **Prototype:** [vbv-fr.github.io/vision-access-v2](https://vbv-fr.github.io/vision-access-v2/)  
 **Replaces:** the current Roles & Permissions model (FP-203 and its sub-tasks)
 
@@ -146,6 +146,8 @@ Rows in the Users list show a ⋮ menu only to people who can act on that user.
   - projects they created show *"Name (deactivated)"* as the creator;
   - their email can be invited again later, as a new user.
 - **Invited users** can be sent the invite again. They can't be added to projects until they've set their password.
+- **Invite links last 7 days.** Password reset links still last 10 minutes. Until now invites shared the 10-minute limit, so most invited people couldn't accept in time.
+- **One live user per email:** two live users can never share an email. This lets a deleted person's email be invited again, lets people deleted before this release come back as Inactive, and stops two saves at the same moment from creating the same person twice.
 - **No self-changes:** nobody can change their own plant, team, roles, Org Admin checkbox or status, or delete themselves.
 - **Last Org Admin:** the last active Org Admin can't be deactivated, deleted or have "Make user Org Admin" unticked. The message reads *"Make someone else an Org Admin first."*
 - **Removing Org Admin** (unticking the checkbox):
@@ -391,6 +393,8 @@ These are required for v2 to be trustworthy.
 3. **The server works out the project, plant, team and company from the item itself,** never from what the browser sends.
 4. **Changes apply immediately:** a change to roles, Org Admin, status, placement or project access, or a delete, takes effect on the person's next action, with no re-login.
 5. **Built-in roles are locked on the server,** not just on screen.
+6. **Sign-in limits per person, not shared by everyone:** requests made before logging in are limited per client address and per page; requests that carry a link token (live updates, images opened in a new tab) are limited per session. One person can no longer use up a limit that all customers share.
+7. **One live user per email** is enforced by the database itself (§6.4).
 
 ---
 
@@ -423,6 +427,7 @@ These are required for v2 to be trustworthy.
   - Edge has its own copy of key generation, which is not affected. Before switching off Vision's copy, confirm no installer or script calls it. None was found in the Vision app or the Edge code.
 - **Adding classes** from module configuration and from the annotation job is removed (§8.7).
 - **Dataset download** keeps a single option: images (§8.7).
+- **Edge schema SQL kept only in the database:** the release manager now registers each Edge version's SQL in the database. The copies of the Edge schema SQL files in the Vision backend, and the one-off route that loaded them, are removed, so there is only one copy that can't drift. Production already holds the SQL for all 34 Edge versions.
 
 ---
 
@@ -530,3 +535,7 @@ These are required for v2 to be trustworthy.
 | D20 | Frinks Org Admins act as Org Admins in customer companies and are hidden from their Users list. |
 | D21 | Someone who loses Org Admin keeps access to projects they created. With no other role, they become a Viewer. |
 | D22 | Inferencing Customizations and keygen: code commented out, nothing in the UI. |
+| D23 | Edge schema SQL lives only in the database, registered by the release manager; the file copies and the one-off loading route are removed. |
+| D24 | Requests made before logging in are limited per client address and page; requests with a link token are limited per session. |
+| D25 | Invite links last 7 days. Password reset links stay at 10 minutes. |
+| D26 | Only one live user per email, enforced by the database. |
